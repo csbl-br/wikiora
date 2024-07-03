@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container">
+  <h1 class="mt-5">Gene Over Representation Analysis</h1>
+  <form action="/enrich" method="post">
+    <div class="form-group">
+      <label for="gene_list">Gene List</label>
+      <textarea class="form-control" id="gene_list" name="gene_list" rows="5">{{ default_genes }}</textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,8 @@
+Flask
+pandas
+bioservices
+scipy 
+matplotlib 
+seaborn 
+SPARQLWrapper
+statsmodels

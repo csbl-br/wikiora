@@ -30,16 +30,10 @@ def load_gmt(file_path):
     return gene_sets
 
 
-gene_sets = load_gmt("gene_sets.gmt")
-
-
 # Load process information from JSON file
 def load_processes(file_path):
     with open(file_path, "r") as f:
         return json.load(f)
-
-
-processes = load_processes("processes.json")
 
 
 # Function to select a random process and get up to 50 genes
@@ -62,16 +56,36 @@ def parse_gene_list(gene_list):
 
 @app.route("/")
 def index():
-    default_genes = select_random_process(processes)
-    default_genes_str = ", ".join(default_genes)
-    return render_template("index.html", default_genes=default_genes_str)
+    return render_template("index.html")
+
+
+@app.route("/example_genes", methods=["POST"])
+def example_genes():
+    organism = request.form["organism"]
+    if organism == "human":
+        processes = load_processes("processes_human.json")
+        default_genes = select_random_process(processes)
+        default_genes_str = ", ".join(default_genes)
+    elif organism == "mouse":
+        processes = load_processes("processes_mouse.json")
+        default_genes = select_random_process(processes)
+        default_genes_str = ", ".join(default_genes)
+    else:
+        default_genes_str = ""
+    return default_genes_str
 
 
 @app.route("/enrich", methods=["POST"])
 def enrich():
+    organism = request.form["organism"]
     gene_list = request.form["gene_list"]
     genes = parse_gene_list(gene_list)
     results = []
+
+    if organism == "human":
+        gene_sets = load_gmt("gene_sets_human.gmt")
+    else:
+        gene_sets = load_gmt("gene_sets_mouse.gmt")
 
     # Total number of genes in the background
     M = sum(len(details["genes"]) for details in gene_sets.values())

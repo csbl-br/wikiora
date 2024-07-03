@@ -5,10 +5,33 @@
   <h1 class="mt-5">Gene Over Representation Analysis</h1>
   <form action="/enrich" method="post">
     <div class="form-group">
+      <label for="organism">Organism</label>
+      <select class="form-control" id="organism" name="organism" onchange="fetchExampleGenes()">
+        <option value="human">Human</option>
+        <option value="mouse">Mouse</option>
+      </select>
+    </div>
+    <div class="form-group">
       <label for="gene_list">Gene List</label>
-      <textarea class="form-control" id="gene_list" name="gene_list" rows="5">{{ default_genes }}</textarea>
+      <textarea class="form-control" id="gene_list" name="gene_list" rows="5"></textarea>
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
   </form>
 </div>
+<script>
+  function fetchExampleGenes() {
+    var organism = document.getElementById('organism').value;
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/example_genes', true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState == 4 && xhr.status == 200) {
+        document.getElementById('gene_list').value = xhr.responseText;
+      }
+    };
+    xhr.send('organism=' + organism);
+  }
+
+  window.onload = fetchExampleGenes;
+</script>
 {% endblock %}

@@ -1,9 +1,8 @@
 import pandas as pd
 from SPARQLWrapper import SPARQLWrapper, JSON
-import random
 
-# SPARQL query
-query = """
+# SPARQL query for human genes
+human_query = """
 SELECT DISTINCT
   ?sitelink
   ?item ?itemLabel
@@ -31,8 +30,33 @@ WHERE
 }
 """
 
+# SPARQL query for mouse genes
+mouse_query = """
+SELECT DISTINCT
+  ?sitelink
+  ?item ?itemLabel
+  ?go
+  ?gene_symbol 
+WHERE 
+{
+  ?item wdt:P686 ?go . 
+  ?sitelink schema:about ?item .
+  ?sitelink schema:isPartOf <https://en.wikipedia.org/> .
+  
+  ?protein wdt:P682 ?item .
+  ?protein wdt:P703 wd:Q83310 .  # MGI for mouse
+  
+  ?protein wdt:P702 ?gene . 
+  
+  ?gene wdt:P2394 ?gene_symbol .  # MGI gene symbol
+            
+  ?item rdfs:label ?itemLabel .
+  FILTER (LANG (?itemLabel) = "en")
+}
+"""
 
-def fetch_data():
+
+def fetch_data(query):
     sparql = SPARQLWrapper("https://query.wikidata.org/sparql")
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
@@ -48,9 +72,6 @@ def process_data(results):
         itemLabel = result["itemLabel"]["value"]
         go = result["go"]["value"]
         gene_symbol = result["gene_symbol"]["value"]
-        entrez = result["entrez"]["value"]
-        ensembl_gene_id = result["ensembl_gene_id"]["value"]
-
         data.append(
             {
                 "sitelink": sitelink,
@@ -58,8 +79,6 @@ def process_data(results):
                 "itemLabel": itemLabel,
                 "go": go,
                 "gene_symbol": gene_symbol,
-                "entrez": entrez,
-                "ensembl_gene_id": ensembl_gene_id,
             }
         )
 
@@ -84,10 +103,17 @@ def save_processes(df, output_file):
 
 
 def main():
-    results = fetch_data()
-    df = process_data(results)
-    generate_gmt(df, "gene_sets.gmt")
-    save_processes(df, "processes.json")
+    # Human genes
+    human_results = fetch_data(human_query)
+    human_df = process_data(human_results)
+    generate_gmt(human_df, "gene_sets_human.gmt")
+    save_processes(human_df, "processes_human.json")
+
+    # Mouse genes
+    mouse_results = fetch_data(mouse_query)
+    mouse_df = process_data(mouse_results)
+    generate_gmt(mouse_df, "gene_sets_mouse.gmt")
+    save_processes(mouse_df, "processes_mouse.json")
 
 
 if __name__ == "__main__":

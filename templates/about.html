@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container">
+  <h1 class="mt-5">About WikiORA</h1>
+  <p>
+    WikiORA is a helper for Over-Representation Analysis of gene sets based on content available on
+    <a href="https://www.wikidata.org" target="_blank">Wikidata</a>. The tool is available for two species:
+    mouse (<i>Mus musculus</i>) and human (<i>Homo sapiens</i>). For each species, there are two sources of markers in
+    the platform: genes linked to
+    <a href="http://geneontology.org" target="_blank">Gene Ontology</a> biological processes and genes linked to
+    cell type markers (mostly from <a href="https://panglaodb.se" target="_blank">PanglaoDB</a>).
+  </p>
+  <p>
+    A hypergeometric test is run against the database to calculate overly represented gene sets.
+    Genes in the list may be separated by tabs, semicolons, commas, or new lines.
+  </p>
+  <h2>Methods</h2>
+  <p>
+    For more information, please refer to the following preprint:
+  </p>
+  <ul>
+    <li><a href="https://doi.org/10.1101/2022.09.15.508149" target="_blank">WikiGOA: Gene set enrichment analysis based
+        on Wikipedia and the Gene Ontology</a><br>
+      Tiago Lubiana, Thomaz Lüscher Dias, Débora Guerra Peixe, Helder Takashi Imoto Nakaya<br>
+      bioRxiv 2022.09.15.508149; doi: <a href="https://doi.org/10.1101/2022.09.15.508149"
+        target="_blank">https://doi.org/10.1101/2022.09.15.508149</a></li>
+</div>
+{% endblock %}

@@ -2,8 +2,21 @@
 
 {% block content %}
 <div class="container">
-  <h1 class="mt-5">Gene Over Representation Analysis</h1>
-  <form action="/enrich" method="post">
+  <h1 class="mt-5">Gene Over Representation Analysis based on Wikidata</h1>
+  <p>
+    WikiORA is a helper for Over-Representation Analysis of gene sets based on content available on
+    <a href="https://www.wikidata.org" target="_blank">Wikidata</a>. The tool is available for two species:
+    mouse (<i>Mus musculus</i>) and human (<i>Homo sapiens</i>). For each species, there are four sources of markers in
+    the platform: genes linked to
+    <a href="http://geneontology.org" target="_blank">Gene Ontology</a> biological processes, molecular functions,
+    cellular components, and genes linked to
+    cell type markers (mostly from <a href="https://panglaodb.se" target="_blank">PanglaoDB</a>).
+  </p>
+  <p>
+    A hypergeometric test is run against the database to calculate overly represented gene sets.
+    Genes in the list may be separated by tabs, semicolons, commas, or new lines.
+  </p>
+  <form action="/enrich" method="get">
     <div class="form-group">
       <label for="organism">Organism</label>
       <select class="form-control" id="organism" name="organism" onchange="fetchExampleGenes()">
@@ -12,24 +25,39 @@
       </select>
     </div>
     <div class="form-group">
+      <label for="analysis_type">Analysis Type</label>
+      <select class="form-control" id="analysis_type" name="analysis_type" onchange="fetchExampleGenes()">
+        <option value="cell_type_markers">Cell Type Markers</option>
+        <option value="biological_processes">Biological Processes</option>
+        <option value="molecular_functions">Molecular Functions</option>
+        <option value="cellular_components">Cellular Components</option>
+      </select>
+    </div>
+    <div class="form-group">
       <label for="gene_list">Gene List</label>
       <textarea class="form-control" id="gene_list" name="gene_list" rows="5"></textarea>
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
   </form>
+  <br>
+  <p id="example-note" style="display: none;">
+    Sample gene set randomly selected. Can you guess the process/function/component/cell type? 🧬🧫🔍
+  </p>
 </div>
 <script>
   function fetchExampleGenes() {
     var organism = document.getElementById('organism').value;
+    var analysisType = document.getElementById('analysis_type').value;
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/example_genes', true);
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.onreadystatechange = function () {
       if (xhr.readyState == 4 && xhr.status == 200) {
         document.getElementById('gene_list').value = xhr.responseText;
+        document.getElementById('example-note').style.display = 'block';
       }
     };
-    xhr.send('organism=' + organism);
+    xhr.send('organism=' + organism + '&analysis_type=' + analysisType);
   }
 
   window.onload = fetchExampleGenes;

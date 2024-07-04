@@ -9,7 +9,7 @@ import numpy as np
 import json
 import random
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path="/static")
 
 
 # Load GMT file into a dictionary
@@ -62,30 +62,73 @@ def index():
 @app.route("/example_genes", methods=["POST"])
 def example_genes():
     organism = request.form["organism"]
-    if organism == "human":
-        processes = load_processes("processes_human.json")
-        default_genes = select_random_process(processes)
-        default_genes_str = ", ".join(default_genes)
-    elif organism == "mouse":
-        processes = load_processes("processes_mouse.json")
-        default_genes = select_random_process(processes)
-        default_genes_str = ", ".join(default_genes)
-    else:
-        default_genes_str = ""
+    analysis_type = request.form["analysis_type"]
+    if analysis_type == "biological_processes":
+        if organism == "human":
+            processes = load_processes(
+                "static/processes_human_biological_processes.json"
+            )
+        else:
+            processes = load_processes(
+                "static/processes_mouse_biological_processes.json"
+            )
+    elif analysis_type == "molecular_functions":
+        if organism == "human":
+            processes = load_processes(
+                "static/processes_human_molecular_functions.json"
+            )
+        else:
+            processes = load_processes(
+                "static/processes_mouse_molecular_functions.json"
+            )
+    elif analysis_type == "cellular_components":
+        if organism == "human":
+            processes = load_processes(
+                "static/processes_human_cellular_components.json"
+            )
+        else:
+            processes = load_processes(
+                "static/processes_mouse_cellular_components.json"
+            )
+    else:  # cell_type_markers is default
+        if organism == "human":
+            processes = load_processes("static/processes_human_cell_type.json")
+        else:
+            processes = load_processes("static/processes_mouse_cell_type.json")
+
+    default_genes = select_random_process(processes)
+    default_genes_str = ", ".join(default_genes)
     return default_genes_str
 
 
-@app.route("/enrich", methods=["POST"])
+@app.route("/enrich", methods=["GET"])
 def enrich():
-    organism = request.form["organism"]
-    gene_list = request.form["gene_list"]
+    organism = request.args.get("organism")
+    analysis_type = request.args.get("analysis_type")
+    gene_list = request.args.get("gene_list")
     genes = parse_gene_list(gene_list)
     results = []
 
-    if organism == "human":
-        gene_sets = load_gmt("gene_sets_human.gmt")
-    else:
-        gene_sets = load_gmt("gene_sets_mouse.gmt")
+    if analysis_type == "biological_processes":
+        if organism == "human":
+            gene_sets = load_gmt("static/gene_sets_human_biological_processes.gmt")
+        else:
+            gene_sets = load_gmt("static/gene_sets_mouse_biological_processes.gmt")
+    elif analysis_type == "molecular_functions":
+        if organism == "human":
+            gene_sets = load_gmt("static/gene_sets_human_molecular_functions.gmt")
+        else:
+            gene_sets = load_gmt("static/gene_sets_mouse_molecular_functions.gmt")
+    elif analysis_type == "cellular_components":
+        if organism == "human":
+            gene_sets = load_gmt("static/gene_sets_human_cellular_components.gmt")
+        else:
+            gene_sets = load_gmt("static/gene_sets_mouse_cellular_components.gmt")
+    else:  # cell_type_markers is default
+        if organism == "human":
+            gene_sets = load_gmt("static/gene_sets_human_cell_type.gmt")
+        else:
+            gene_sets = load_gmt("static/gene_sets_mouse_cell_type.gmt")
 
     # Total number of genes in the background
     M = sum(len(details["genes"]) for details in gene_sets.values())
@@ -119,6 +162,16 @@ def enrich():
         plot_results(results_df)
         results = results_df.to_dict(orient="records")
     return render_template("results.html", results=results)
+
+
+@app.route("/download")
+def download():
+    return render_template("download.html")
+
+
+@app.route("/about")
+def about():
+    return render_template("about.html")
 
 
 # Function to plot the results

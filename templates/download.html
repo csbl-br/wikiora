@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container">
+  <h1 class="mt-5">Download Wikidata-based GMTs</h1>
+  <p>You can download the GMT files generated from Wikidata for different types of analysis:</p>
+  <ul>
+    <li><a href="/static/gene_sets_human.gmt" download>Human Biological Processes</a></li>
+    <li><a href="/static/gene_sets_mouse.gmt" download>Mouse Biological Processes</a></li>
+    <li><a href="/static/gene_sets_human_cell_type.gmt" download>Human Cell Type Markers</a></li>
+    <li><a href="/static/gene_sets_mouse_cell_type.gmt" download>Mouse Cell Type Markers</a></li>
+  </ul>
+</div>
+{% endblock %}

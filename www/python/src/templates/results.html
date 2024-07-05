@@ -4,78 +4,93 @@
 <div class="container-fluid">
   <h1 class="mt-5">Over Representation Analysis Results</h1>
   <div class="row">
-    <div class="col-md-6">
-      <h3>Analysis Table</h3>
-      <p>Clicking on the description triggers the change of the Wikipedia page in the adjacent panel.</p>
-      {% if results %}
-      <table id="results" class="display" style="width:100%">
-        <thead>
-          <tr>
-            <th>GO Term</th>
-            <th>Description</th>
-            <th>Overlap</th>
-            <th>Count</th>
-            <th>p-value</th>
-            <th>Corrected p-value</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for row in results %}
-          <tr>
-            <td>{{ row['GO Term'] }}</td>
-            <td><a href="javascript:void(0)" onclick="showWikipedia('{{ row['Wikipedia URL'] }}')"
-                style="color:blue; text-decoration:underline;">{{ row['Description'] }}</a></td>
-            <td><a href="javascript:void(0)" onclick="toggleOverlap(this)"><i class="fas fa-plus"></i> expand</a>
-              <div class="foldable-content" style="display:none">{{ row['Overlap'] }}</div>
-            </td>
-            <td>{{ row['Count'] }}</td>
-            <td>{{ '%.2e'|format(row['p-value']) }}</td>
-            <td>{{ '%.2e'|format(row['corrected p-value']) }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-      {% else %}
-      <p>No results found.</p>
-      {% endif %}
+    <div class="col-md-6" style="padding: 10px;">
+      <div class="card h-100">
+        <div class="card-body">
+          <h3>Analysis Table</h3>
+          <p>Click on a description to modify the Wikipedia page.</p>
+          {% if results %}
+          <table id="results" class="display" style="width:100%">
+            <thead>
+              <tr>
+                <th>GO Term</th>
+                <th>Description</th>
+                <th>Overlap</th>
+                <th>Count</th>
+                <th>p-value</th>
+                <th>Corrected p-value</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in results %}
+              <tr>
+                <td>{{ row['GO Term'] }}</td>
+                <td><a href="javascript:void(0)" onclick="showWikipedia('{{ row['Wikipedia URL'] }}')"
+                    style="color:blue; text-decoration:underline;">{{ row['Description'] }}</a></td>
+                <td><a href="javascript:void(0)" onclick="toggleOverlap(this)"><i class="fas fa-plus"></i> expand</a>
+                  <div class="foldable-content" style="display:none">{{ row['Overlap'] }}</div>
+                </td>
+                <td>{{ row['Count'] }}</td>
+                <td>{{ '%.2e'|format(row['p-value']) }}</td>
+                <td>{{ '%.2e'|format(row['corrected p-value']) }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% else %}
+          <p>No results found.</p>
+          {% endif %}
+        </div>
+      </div>
     </div>
-    <div class="col-md-6">
-      <h3>Wikipedia Page</h3>
-      {% if results %}
-      <iframe id="wikipedia-frame" src="{{ results[0]['Wikipedia URL'] }}"></iframe>
-      {% endif %}
+    <div class="col-md-6" style="padding: 10px;">
+      <div class="card h-100">
+        <div class="card-body">
+          <h3>Wikipedia Page</h3>
+          {% if results %}
+          <iframe id="wikipedia-frame" src="{{ results[0]['Wikipedia URL'] }}"></iframe>
+          {% endif %}
+        </div>
+      </div>
     </div>
   </div>
   <div class="row mt-5">
-    <div class="col-md-6">
-      <h3>Plot</h3>
-      {% if results %}
-      <img src="{{ url_for('static', filename='enrichment_plot.png') }}" class="img-fluid mt-3"
-        alt="Over Representation Analysis Plot">
-      {% endif %}
+    <div class="col-lg-6" style="padding: 10px;">
+      <div class="card h-100">
+        <div class="card-body">
+          <h3>Plot</h3>
+          {% if results %}
+          <img src="{{ url_for('static', filename='enrichment_plot.png') }}" class="img-fluid mt-3"
+            alt="Over Representation Analysis Plot">
+          {% endif %}
+        </div>
+      </div>
     </div>
-    <div class="col-md-6">
-      <h3>Methods</h3>
-      <p>This analysis was performed using a hypergeometric test to determine the over-representation of specific gene
-        sets within the provided list. The steps are as follows:</p>
-      <ol>
-        <li>A list of genes is provided by the user.</li>
-        <li>The background gene sets are defined using data curated into Wikidata.</li>
-        <li>For each GO term, the overlap between the user-provided gene list and the genes associated with the GO term
-          is calculated.</li>
-        <li>The hypergeometric test is used to calculate the p-value, representing the probability of observing at least
-          as many overlapping genes by chance.</li>
-        <li>The Bonferroni correction is applied to account for multiple testing and adjust the p-values.</li>
-        <li>Results are sorted by p-value to highlight the most significantly over-represented GO terms.</li>
-      </ol>
-      <p>The table shows the GO term, description, overlapping genes, count, p-value, and Bonferroni-corrected p-value.
-        Clicking on a description displays the corresponding Wikipedia page.</p>
+    <div class="col-lg-6" style="padding: 10px;">
+      <div class="card h-100">
+        <div class="card-body">
+          <h3>Methods</h3>
+          <p>This analysis was performed using a hypergeometric test to determine the over-representation of specific
+            gene sets within the provided list. The steps are as follows:</p>
+          <ol>
+            <li>A list of genes is provided by the user.</li>
+            <li>The background gene sets are defined using data curated into Wikidata.</li>
+            <li>For each GO term, the overlap between the user-provided gene list and the genes associated with the GO
+              term is calculated.</li>
+            <li>The hypergeometric test is used to calculate the p-value, representing the probability of observing at
+              least as many overlapping genes by chance.</li>
+            <li>The Bonferroni correction is applied to account for multiple testing and adjust the p-values.</li>
+            <li>Results are sorted by p-value to highlight the most significantly over-represented GO terms.</li>
+          </ol>
+          <p>The table shows the GO term, description, overlapping genes, count, p-value, and Bonferroni-corrected
+            p-value. Clicking on a description displays the corresponding Wikipedia page.</p>
+        </div>
+      </div>
     </div>
   </div>
   <a href="/" class="btn btn-secondary mt-3">Back</a>
 </div>
 <script>
-  showWikipedia
   $(document).ready(function () {
     $('#results').DataTable({
       "order": [
@@ -104,12 +119,8 @@
 <style>
   iframe {
     width: 100%;
-    height: 50vh;
+    height: 80vh;
     border: none;
-  }
-
-  .col-md-6 {
-    padding: 0;
   }
 
   .foldable-content {
@@ -118,18 +129,38 @@
     /* To preserve spaces and line breaks */
   }
 
-  a {
-    color: inherit;
-    /* To remove the blue color from the links */
-    text-decoration: none;
-  }
-
-  a:hover {
-    text-decoration: underline;
-  }
-
   .fas {
     margin-right: 5px;
+  }
+
+  .card {
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .card-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card-body img {
+    flex: 1;
+  }
+
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .col-md-6,
+  .col-lg-6 {
+    display: flex;
+    flex-direction: column;
   }
 </style>
 {% endblock %}

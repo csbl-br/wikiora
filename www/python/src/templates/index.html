@@ -3,19 +3,24 @@
 {% block content %}
 <div class="container">
   <h1 class="mt-5">Gene Over Representation Analysis based on Wikidata</h1>
-  <p>
-    WikiORA is a helper for Over-Representation Analysis of gene sets based on content available on
-    <a href="https://www.wikidata.org" target="_blank">Wikidata</a>. The tool is available for two species:
-    mouse (<i>Mus musculus</i>) and human (<i>Homo sapiens</i>). For each species, there are four sources of markers in
-    the platform: genes linked to
-    <a href="http://geneontology.org" target="_blank">Gene Ontology</a> biological processes, molecular functions,
-    cellular components, and genes linked to
-    cell type markers (mostly from <a href="https://panglaodb.se" target="_blank">PanglaoDB</a>).
-  </p>
-  <p>
-    A hypergeometric test is run against the database to calculate overly represented gene sets.
-    Genes in the list may be separated by tabs, semicolons, commas, or new lines.
-  </p>
+
+  <img src="{{ url_for('static', filename='example.png') }}" class="img-fluid" alt="Example Workflow">
+  <p class="mt-2 text-center small text-muted">WikiORA integrates Wikidata, Gene Ontology, PanglaoDB, and Wikipedia for
+    simple,
+    encyclopedic enrichment analysis.</p>
+
+  <div class="mt-4">
+    <p>
+      WikiORA is a helper for Over-Representation (i.e. enrichment) Analysis of gene sets based on <a
+        href="https://en.wikipedia.org" target="_blank">Wikipedia</a> and
+      <a href="https://www.wikidata.org" target="_blank">Wikidata</a>.</p>
+    <p> For each species (human and mouse), there are four sources of gene sets:
+      genes linked to cell types or
+      <a href="http://geneontology.org" target="_blank">Gene Ontology</a> biological processes, molecular functions, and
+      cellular components.
+    </p>
+  </div>
+
   <form action="/enrich" method="get">
     <div class="form-group">
       <label for="organism">Organism</label>
@@ -37,12 +42,15 @@
       <label for="gene_list">Gene List</label>
       <textarea class="form-control" id="gene_list" name="gene_list" rows="5"></textarea>
     </div>
+    <p class="small text-muted">
+      Genes in the list may be separated by tabs, semicolons, commas, or new lines.
+    </p>
     <button type="button" class="btn btn-secondary" onclick="fetchExampleGenes()">Randomize</button>
     <button type="submit" class="btn btn-primary">Submit</button>
   </form>
   <br>
   <p id="example-note" style="display: none;">
-    Example randomly selected from available gene sets. Can you guess the process/cell type? 🧬🧫🔍
+    Sample gene set randomly selected. Can you guess the process/function/component/cell type? 🧬🧫🔍
   </p>
 </div>
 <script>

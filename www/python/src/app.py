@@ -188,7 +188,7 @@ def plot_results(df):
     plt.axvline(-np.log10(0.05), color="red", linestyle="--", linewidth=1)
     plt.xlabel("-log(corrected p-value)")
     plt.ylabel("GO Term Description")
-    plt.title("Top 10 Enriched GO Terms by Corrected p-value")
+    plt.title("Top 10 Enriched Terms by Corrected p-value")
     plt.tight_layout()
     plt.savefig("static/enrichment_plot.png")
 

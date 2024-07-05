@@ -8,7 +8,7 @@
       <div class="card h-100">
         <div class="card-body">
           <h3>Analysis Table</h3>
-          <p>Click on a description to modify the Wikipedia page.</p>
+          <p>Click on a description to modify the displayed Wikipedia page.</p>
           {% if results %}
           <table id="results" class="display" style="width:100%">
             <thead>
@@ -70,13 +70,15 @@
       <div class="card h-100">
         <div class="card-body">
           <h3>Methods</h3>
-          <p>This analysis was performed using a hypergeometric test to determine the over-representation of specific
-            gene sets within the provided list. The steps are as follows:</p>
+          <p>This analysis was performed using a <a href="javascript:void(0)"
+              onclick="showWikipedia('https://en.wikipedia.org/wiki/Hypergeometric_test')"
+              style="color:blue; text-decoration:underline;"> hypergeometric test</a> to determine the
+            over-representation of specific gene sets within the provided list. The steps are as follows:</p>
           <ol>
             <li>A list of genes is provided by the user.</li>
             <li>The background gene sets are defined using data curated into Wikidata.</li>
-            <li>For each GO term, the overlap between the user-provided gene list and the genes associated with the GO
-              term is calculated.</li>
+            <li>For each gene set the overlap between the user-provided gene list and the genes
+              associated with the gene set (and its Wikipedia page) is calculated.</li>
             <li>The hypergeometric test is used to calculate the p-value, representing the probability of observing at
               least as many overlapping genes by chance.</li>
             <li>The Bonferroni correction is applied to account for multiple testing and adjust the p-values.</li>

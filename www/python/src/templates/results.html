@@ -13,7 +13,7 @@
           <table id="results" class="display" style="width:100%">
             <thead>
               <tr>
-                <th>GO Term</th>
+                <th>Term</th>
                 <th>Description</th>
                 <th>Overlap</th>
                 <th>Count</th>
@@ -24,10 +24,11 @@
             <tbody>
               {% for row in results %}
               <tr>
-                <td>{{ row['GO Term'] }}</td>
+                <td>{{ row['Term'] }}</td>
                 <td><a href="javascript:void(0)" onclick="showWikipedia('{{ row['Wikipedia URL'] }}')"
-                    style="color:blue; text-decoration:underline;">{{ row['Description'] }}</a></td>
-                <td><a href="javascript:void(0)" onclick="toggleOverlap(this)"><i class="fas fa-plus"></i> expand</a>
+                    class="wiki-link">{{ row['Description'] }}</a></td>
+                <td><a href="javascript:void(0)" onclick="toggleOverlap(this)" class="wiki-link"><i
+                      class="fas fa-plus"></i> expand</a>
                   <div class="foldable-content" style="display:none">{{ row['Overlap'] }}</div>
                 </td>
                 <td>{{ row['Count'] }}</td>
@@ -72,20 +73,27 @@
           <h3>Methods</h3>
           <p>This analysis was performed using a <a href="javascript:void(0)"
               onclick="showWikipedia('https://en.wikipedia.org/wiki/Hypergeometric_test')"
-              style="color:blue; text-decoration:underline;"> hypergeometric test</a> to determine the
-            over-representation of specific gene sets within the provided list. The steps are as follows:</p>
+              class="wiki-link">hypergeometric test</a> to determine the
+            <a href="javascript:void(0)"
+              onclick="showWikipedia('https://en.wikipedia.org/wiki/Gene_set_enrichment_analysis')"
+              class="wiki-link">over-representation</a> of specific gene sets within the provided list. The steps are as
+            follows:</p>
           <ol>
             <li>A list of genes is provided by the user.</li>
             <li>The background gene sets are defined using data curated into Wikidata.</li>
-            <li>For each gene set the overlap between the user-provided gene list and the genes
-              associated with the gene set (and its Wikipedia page) is calculated.</li>
-            <li>The hypergeometric test is used to calculate the p-value, representing the probability of observing at
-              least as many overlapping genes by chance.</li>
-            <li>The Bonferroni correction is applied to account for multiple testing and adjust the p-values.</li>
-            <li>Results are sorted by p-value to highlight the most significantly over-represented GO terms.</li>
+            <li>For each gene set, the overlap between the user-provided gene list and the genes associated with the
+              gene set (and its Wikipedia page) is calculated.</li>
+            <li>The <a href="javascript:void(0)" onclick="showWikipedia('https://en.wikipedia.org/wiki/P-value')"
+                class="wiki-link">p-value</a> is calculated using the hypergeometric test, representing the probability
+              of observing at least as many overlapping genes by chance.</li>
+            <li>The <a href="javascript:void(0)"
+                onclick="showWikipedia('https://en.wikipedia.org/wiki/Bonferroni_correction')"
+                class="wiki-link">Bonferroni correction</a> is applied to account for multiple testing and adjust the
+              p-values.</li>
+            <li>Results are sorted by p-value to highlight the most significantly over-represented terms.</li>
           </ol>
-          <p>The table shows the GO term, description, overlapping genes, count, p-value, and Bonferroni-corrected
-            p-value. Clicking on a description displays the corresponding Wikipedia page.</p>
+          <p>The table shows the term, description, overlapping genes, count, p-value, and Bonferroni-corrected p-value.
+            Clicking on a description displays the corresponding Wikipedia page.</p>
         </div>
       </div>
     </div>
@@ -163,6 +171,15 @@
   .col-lg-6 {
     display: flex;
     flex-direction: column;
+  }
+
+  .wiki-link {
+    color: #3366CC;
+    text-decoration: none;
+  }
+
+  .wiki-link:hover {
+    text-decoration: underline;
   }
 </style>
 {% endblock %}

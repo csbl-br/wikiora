@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, send_from_directory
 import pandas as pd
 from scipy.stats import hypergeom
 from statsmodels.stats.multitest import multipletests
@@ -10,6 +10,12 @@ import json
 import random
 
 app = Flask(__name__, static_url_path="/static")
+
+
+# Route to serve robots.txt
+@app.route("/robots.txt")
+def robots_txt():
+    return send_from_directory(app.static_folder, "robots.txt")
 
 
 # Load GMT file into a dictionary

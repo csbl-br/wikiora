@@ -37,11 +37,12 @@
       <label for="gene_list">Gene List</label>
       <textarea class="form-control" id="gene_list" name="gene_list" rows="5"></textarea>
     </div>
+    <button type="button" class="btn btn-secondary" onclick="fetchExampleGenes()">Randomize</button>
     <button type="submit" class="btn btn-primary">Submit</button>
   </form>
   <br>
   <p id="example-note" style="display: none;">
-    Sample gene set randomly selected. Can you guess the process/function/component/cell type? 🧬🧫🔍
+    Example randomly selected from available gene sets. Can you guess the process/cell type? 🧬🧫🔍
   </p>
 </div>
 <script>

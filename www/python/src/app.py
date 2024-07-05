@@ -140,7 +140,7 @@ def enrich():
     M = sum(len(details["genes"]) for details in gene_sets.values())
     N = len(genes)
 
-    for go_term, details in gene_sets.items():
+    for term, details in gene_sets.items():
         overlap = set(genes).intersection(details["genes"])
         if overlap:
             x = len(overlap)
@@ -148,7 +148,7 @@ def enrich():
             p_value = hypergeometric_test(M, n, N, x)
             results.append(
                 {
-                    "GO Term": go_term,
+                    "Term": term,
                     "Description": details["description"],
                     "Wikipedia URL": details["wikipedia_url"],
                     "Overlap": ", ".join(overlap),

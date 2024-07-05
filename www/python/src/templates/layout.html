@@ -9,7 +9,7 @@
   <!-- Open Graph Meta Tags -->
   <meta property="og:title" content="WikiORA - gene Over-Representation Analysis">
   <meta property="og:description" content="Simplified gene Over-Representation Analysis with Wikipedia navigation.">
-  <meta property="og:image" content="{{ url_for('static', filename='logo.png') }}">
+  <meta property="og:image" content="{{ url_for('static', filename='example.png') }}">
   <meta property="og:url" content="{{ request.url }}">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="WikiORA">
@@ -18,7 +18,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="WikiORA - Gene Over Representation Analysis">
   <meta name="twitter:description" content="Simplified gene Over-Representation Analysis with Wikipedia navigation..">
-  <meta name="twitter:image" content="{{ url_for('static', filename='logo.png') }}">
+  <meta name="twitter:image" content="{{ url_for('static', filename='logo.svg') }}">
 
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='logo.svg') }}">
@@ -32,7 +32,11 @@
 
 <body>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="/">WikiORA</a>
+    <a class="navbar-brand" href="/">
+      <img src="{{ url_for('static', filename='logo.svg') }}" width="30" height="30" class="d-inline-block align-top"
+        alt="">
+      WikiORA
+    </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
       aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -54,6 +58,14 @@
   <div class="container-fluid">
     {% block content %}{% endblock %}
   </div>
+</body>
+
+<footer class="footer mt-auto py-3 bg-light">
+  <div class="container">
+    <span class="text-muted">Made in 🇧🇷 in 2024. Content from Wikidata is under CC0. <a href="/about">About</a> | <a
+        href="https://github.com/lubianat/wikiora">GitHub</a></span>
+  </div>
+</footer>
 </body>
 
 </html>

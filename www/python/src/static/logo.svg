@@ -13,7 +13,10 @@
    version="1.1"
    id="svg22"
    sodipodi:docname="logo.svg"
-   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)">
+   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
+   inkscape:export-filename="/home/lubianat/Documents/lab_related/wikiora/www/python/src/static/logo.png"
+   inkscape:export-xdpi="288"
+   inkscape:export-ydpi="288">
   <metadata
      id="metadata28">
     <rdf:RDF>
@@ -22,7 +25,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -42,8 +45,8 @@
      id="namedview24"
      showgrid="false"
      inkscape:zoom="3.337544"
-     inkscape:cx="36.586243"
-     inkscape:cy="29.982844"
+     inkscape:cx="-17.495441"
+     inkscape:cy="28.784358"
      inkscape:window-x="72"
      inkscape:window-y="27"
      inkscape:window-maximized="1"

@@ -43,7 +43,7 @@ WHERE
   ?item wdt:P703 wd:Q15978631 . 
   {?item wdt:P279 ?superclass .}
   UNION
-  {?item wdt:P171 ?superclass .}
+  {?item wdt:P10019 ?superclass .}
   ?sitelink schema:about ?superclass .
   ?sitelink schema:isPartOf <https://en.wikipedia.org/> .
   
@@ -66,12 +66,56 @@ WHERE
   ?item wdt:P703 wd:Q83310 . 
   {?item wdt:P279 ?superclass .}
   UNION
-  {?item wdt:P171 ?superclass .}
+  {?item wdt:P10019 ?superclass .}
   ?sitelink schema:about ?superclass .
   ?sitelink schema:isPartOf <https://en.wikipedia.org/> .
   
   ?gene wdt:P2394 ?gene_symbol . 
             
+  ?item rdfs:label ?itemLabel .
+  FILTER (LANG (?itemLabel) = "en")
+}
+"""
+
+# SPARQL query for molecular functions (Wikipedia links)
+molecular_function_wikipedia_query_template = """
+SELECT DISTINCT
+  ?sitelink
+  ?item ?itemLabel
+  ?go
+WHERE 
+{
+   ?something p:P680 ?statement . 
+    ?statement ps:P680 ?item ;
+                pq:P4390 wd:Q39893449 .
+  
+  # Get Wikipedia sitelinks
+  ?sitelink schema:about ?something ;
+            schema:isPartOf <https://en.wikipedia.org/>  .
+  
+  ?item wdt:P686 ?go . 
+  ?item rdfs:label ?itemLabel .
+  FILTER (LANG (?itemLabel) = "en")
+}
+"""
+
+# SPARQL query for molecular functions (gene mappings)
+molecular_function_gene_query_template = """
+SELECT DISTINCT
+  ?item ?itemLabel
+  ?go
+  ?gene_symbol 
+WHERE 
+{
+  ?item wdt:P686 ?go . 
+
+  ?protein wdt:P680 ?item .
+  ?protein wdt:P703 wd:{{ organism }}. 
+  
+  ?protein wdt:P702 ?gene . 
+  
+  ?gene wdt:{{ gene_symbol }} ?gene_symbol . 
+ 
   ?item rdfs:label ?itemLabel .
   FILTER (LANG (?itemLabel) = "en")
 }
@@ -86,14 +130,14 @@ def fetch_data(query):
     return results["results"]["bindings"]
 
 
-def process_data(results):
+def process_data(results, include_go=True):
     data = []
     for result in results:
-        sitelink = result["sitelink"]["value"]
+        sitelink = result.get("sitelink", {}).get("value", "")
         item = result["item"]["value"]
         itemLabel = result["itemLabel"]["value"]
-        go = result.get("go", {}).get("value", "")
-        gene_symbol = result["gene_symbol"]["value"]
+        go = result.get("go", {}).get("value", "") if include_go else ""
+        gene_symbol = result.get("gene_symbol", {}).get("value", "")
         data.append(
             {
                 "sitelink": sitelink,
@@ -133,7 +177,6 @@ def main():
 
     go_properties = {
         "biological_processes": "P682",
-        "molecular_functions": "P680",
         "cellular_components": "P681",
     }
 
@@ -167,6 +210,31 @@ def main():
         mouse_cell_type_df, "static/gene_sets_mouse_cell_type.gmt", use_item_label=True
     )
     save_processes(mouse_cell_type_df, "static/processes_mouse_cell_type.json")
+
+    # Custom handling for molecular functions
+    for organism, details in organisms.items():
+        wikipedia_query = Template(molecular_function_wikipedia_query_template).render(
+            organism=details["id"]
+        )
+        gene_query = Template(molecular_function_gene_query_template).render(
+            organism=details["id"], gene_symbol=details["gene_symbol"]
+        )
+
+        wikipedia_results = fetch_data(wikipedia_query)
+        gene_results = fetch_data(gene_query)
+
+        df_wikipedia = process_data(wikipedia_results, include_go=False)
+        df_gene = process_data(gene_results)
+
+        combined_df = pd.merge(df_gene, df_wikipedia, on="item", suffixes=("", "_wiki"))
+        combined_df["sitelink"] = combined_df["sitelink_wiki"]
+        combined_df = combined_df.drop(columns=["sitelink_wiki", "itemLabel_wiki"])
+
+        output_file = f"static/gene_sets_{organism}_molecular_functions.gmt"
+        generate_gmt(combined_df, output_file)
+        save_processes(
+            combined_df, f"static/processes_{organism}_molecular_functions.json"
+        )
 
 
 if __name__ == "__main__":

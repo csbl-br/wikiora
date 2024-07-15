@@ -29,7 +29,12 @@
                     class="wiki-link">{{ row['Description'] }}</a></td>
                 <td><a href="javascript:void(0)" onclick="toggleOverlap(this)" class="wiki-link"><i
                       class="fas fa-plus"></i> expand</a>
-                  <div class="foldable-content" style="display:none">{{ row['Overlap'] }}</div>
+                  <div class="foldable-content" style="display:none">
+                    {% for gene in row['Overlap'].split(', ') %}
+                    <a href="javascript:void(0)" onclick="showWikipedia('https://en.wikipedia.org/wiki/{{ gene }}')"
+                      class="wiki-link">{{ gene }}</a>{% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                  </div>
                 </td>
                 <td>{{ row['Count'] }}</td>
                 <td>{{ '%.2e'|format(row['p-value']) }}</td>
@@ -77,7 +82,8 @@
             <a href="javascript:void(0)"
               onclick="showWikipedia('https://en.wikipedia.org/wiki/Gene_set_enrichment_analysis')"
               class="wiki-link">over-representation</a> of specific gene sets within the provided list. The steps are as
-            follows:</p>
+            follows:
+          </p>
           <ol>
             <li>A list of genes is provided by the user.</li>
             <li>The background gene sets are defined using data curated into Wikidata.</li>

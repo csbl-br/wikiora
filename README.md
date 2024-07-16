@@ -47,17 +47,13 @@ WikiORA is developed in Brazil by a team of bioinformaticians passionate about o
 
 If you have any questions, feedback, or suggestions, please feel free to contact us via [GitHub](https://github.com/lubianat/wikiora/issues).
 
-## GitHub
-
-If you like our project, give us a ⭐ on [GitHub](https://github.com/lubianat/wikiora)!
-
 ## Installation
 
 To run WikiORA locally, clone the repository and install the required dependencies:
 
 ```bash
 git clone https://github.com/lubianat/wikiora.git
-cd wikiora
+cd wikiora/www/python/src
 pip install -r requirements.txt
 ```
 

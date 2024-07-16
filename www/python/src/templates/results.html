@@ -27,8 +27,8 @@
                 <td>{{ row['Term'] }}</td>
                 <td><a href="javascript:void(0)" onclick="showWikipedia('{{ row['Wikipedia URL'] }}')"
                     class="wiki-link">{{ row['Description'] }}</a></td>
-                <td><a href="javascript:void(0)" onclick="toggleOverlap(this)" class="wiki-link"><i
-                      class="fas fa-plus"></i> expand</a>
+                <td><a href="javascript:void(0)" onclick="toggleOverlap(this, '{{ row['Overlap'] }}')"
+                    class="wiki-link"><i class="fas fa-plus"></i> expand</a>
                   <div class="foldable-content" style="display:none">
                     {% for gene in row['Overlap'].split(', ') %}
                     <a href="javascript:void(0)" onclick="showWikipedia('https://en.wikipedia.org/wiki/{{ gene }}')"
@@ -120,10 +120,14 @@
     document.getElementById('wikipedia-frame').src = url;
   }
 
-  function toggleOverlap(element) {
+  function toggleOverlap(element, genes) {
     var div = element.nextElementSibling;
     var icon = element.querySelector('i');
     if (div.style.display === "none") {
+      var geneList = genes.split(', ').sort();
+      div.innerHTML = geneList.map(gene =>
+        `<a href="javascript:void(0)" onclick="showWikipedia('https://en.wikipedia.org/wiki/${gene}')" class="wiki-link">${gene}</a>`
+        ).join(', ');
       div.style.display = "block";
       element.innerHTML = '<i class="fas fa-minus"></i> collapse';
     } else {
@@ -140,9 +144,10 @@
   }
 
   .foldable-content {
-    display: none;
-    white-space: pre-wrap;
-    /* To preserve spaces and line breaks */
+    padding: 0;
+    /* Remove any padding */
+    margin: 0;
+    /* Remove any margin */
   }
 
   .fas {
@@ -182,10 +187,22 @@
   .wiki-link {
     color: #3366CC;
     text-decoration: none;
+    margin: 0;
+    /* Remove any margin */
+    padding: 0;
+    /* Remove any padding */
+    line-height: normal;
+    /* Set a normal line-height */
+    display: inline;
+    /* Ensure display is set to inline */
   }
 
   .wiki-link:hover {
     text-decoration: underline;
+  }
+
+  table.dataTable tbody td {
+    word-break: break-word;
   }
 </style>
 {% endblock %}

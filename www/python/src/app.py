@@ -8,6 +8,7 @@ import re
 import numpy as np
 import json
 import random
+import os
 
 app = Flask(__name__, static_url_path="/static")
 
@@ -34,6 +35,11 @@ def load_gmt(file_path):
                 "genes": set(genes),
             }
     return gene_sets
+
+
+# Load genes.json
+with open(os.path.join("static", "genes.json")) as f:
+    genes_data = json.load(f)
 
 
 # Load process information from JSON file
@@ -146,12 +152,22 @@ def api_enrich():
             x = len(overlap)
             n = len(details["genes"])
             p_value = hypergeometric_test(M, n, N, x)
+            overlap_info = []
+            for gene in overlap:
+                gene_info = genes_data.get(gene, {})
+                gene_link = gene_info.get(
+                    "wikipediaLink", f"https://en.wikipedia.org/wiki/{gene}"
+                )
+                gene_status = gene_info.get("pageStatus", "red")
+                overlap_info.append(
+                    {"gene": gene, "link": gene_link, "status": gene_status}
+                )
             results.append(
                 {
                     "Term": term,
                     "Description": details["description"],
                     "Wikipedia URL": details["wikipedia_url"],
-                    "Overlap": ", ".join(overlap),
+                    "Overlap": overlap_info,
                     "Count": x,
                     "p-value": p_value,
                 }

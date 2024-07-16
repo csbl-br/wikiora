@@ -27,12 +27,14 @@
                 <td>{{ row['Term'] }}</td>
                 <td><a href="javascript:void(0)" onclick="showWikipedia('{{ row['Wikipedia URL'] }}')"
                     class="wiki-link">{{ row['Description'] }}</a></td>
-                <td><a href="javascript:void(0)" onclick="toggleOverlap(this, '{{ row['Overlap'] }}')"
-                    class="wiki-link"><i class="fas fa-plus"></i> expand</a>
-                  <div class="foldable-content" style="display:none">
-                    {% for gene in row['Overlap'].split(', ') %}
-                    <a href="javascript:void(0)" onclick="showWikipedia('https://en.wikipedia.org/wiki/{{ gene }}')"
-                      class="wiki-link">{{ gene }}</a>{% if not loop.last %}, {% endif %}
+                <td>
+                  <a href="javascript:void(0)" onclick="toggleOverlap(this, '{{ row['Term'] }}')" class="wiki-link"><i
+                      class="fas fa-plus"></i> expand</a>
+                  <div class="foldable-content" style="display:none" data-term="{{ row['Term'] }}">
+                    {% for gene_info in row['Overlap'] %}
+                    <a href="javascript:void(0)" onclick="showWikipedia('{{ gene_info.link }}')" class="wiki-link"
+                      style="color: {{ 'red' if gene_info.status == 'red' else 'blue' }}"><i>{{ gene_info.gene }}</i></a>{% if not loop.last %},
+                    {% endif %}
                     {% endfor %}
                   </div>
                 </td>
@@ -120,14 +122,10 @@
     document.getElementById('wikipedia-frame').src = url;
   }
 
-  function toggleOverlap(element, genes) {
+  function toggleOverlap(element, term) {
     var div = element.nextElementSibling;
     var icon = element.querySelector('i');
     if (div.style.display === "none") {
-      var geneList = genes.split(', ').sort();
-      div.innerHTML = geneList.map(gene =>
-        `<a href="javascript:void(0)" onclick="showWikipedia('https://en.wikipedia.org/wiki/${gene}')" class="wiki-link">${gene}</a>`
-        ).join(', ');
       div.style.display = "block";
       element.innerHTML = '<i class="fas fa-minus"></i> collapse';
     } else {
@@ -203,6 +201,10 @@
 
   table.dataTable tbody td {
     word-break: break-word;
+  }
+
+  .foldable-content a {
+    font-style: italic;
   }
 </style>
 {% endblock %}

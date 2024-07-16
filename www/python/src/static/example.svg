@@ -16,7 +16,10 @@
    version="1.1"
    id="svg8"
    inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
-   sodipodi:docname="example.svg">
+   sodipodi:docname="example.svg"
+   inkscape:export-filename="/home/lubianat/Documents/lab_related/wikiora/www/python/src/static/example.png"
+   inkscape:export-xdpi="200"
+   inkscape:export-ydpi="200">
   <defs
      id="defs2">
     <marker
@@ -103,7 +106,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.4142136"
-     inkscape:cx="399.77291"
+     inkscape:cx="393.5562"
      inkscape:cy="27.338865"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"

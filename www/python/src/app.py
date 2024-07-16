@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, send_from_directory
+from flask import Flask, request, render_template, jsonify, send_from_directory
 import pandas as pd
 from scipy.stats import hypergeom
 from statsmodels.stats.multitest import multipletests
@@ -107,8 +107,8 @@ def example_genes():
     return default_genes_str
 
 
-@app.route("/enrich", methods=["GET"])
-def enrich():
+@app.route("/api/enrich", methods=["GET"])
+def api_enrich():
     organism = request.args.get("organism")
     analysis_type = request.args.get("analysis_type")
     gene_list = request.args.get("gene_list")
@@ -167,6 +167,17 @@ def enrich():
         )  # Show only the top 10 enriched sets
         plot_results(results_df)
         results = results_df.to_dict(orient="records")
+
+    return jsonify(results)
+
+
+@app.route("/enrich", methods=["GET"])
+def enrich():
+    organism = request.args.get("organism")
+    analysis_type = request.args.get("analysis_type")
+    gene_list = request.args.get("gene_list")
+    response = api_enrich()
+    results = response.get_json()
     return render_template("results.html", results=results)
 
 

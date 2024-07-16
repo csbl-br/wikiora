@@ -7,7 +7,7 @@
     <div class="col-md-6" style="padding: 10px;">
       <div class="card h-100">
         <div class="card-body">
-          <h3>Analysis Table</h3>
+          <h3>Over-Representation Summary</h3>
           <p>Click on a description to display its Wikipedia page.</p>
           {% if results %}
           <table id="results" class="display" style="width:100%">
@@ -45,6 +45,7 @@
               {% endfor %}
             </tbody>
           </table>
+          <button id="download-tsv" class="btn btn-secondary" style="margin-top: 20px; width:30%">Download TSV</button>
           {% else %}
           <p>No results found.</p>
           {% endif %}
@@ -132,8 +133,31 @@
       div.style.display = "none";
       element.innerHTML = '<i class="fas fa-plus"></i> expand';
     }
-  }
+  };
+
+  document.getElementById('download-tsv').addEventListener('click', function () {
+    const data = JSON.parse(`{{ results | tojson | safe }}`);
+    let tsv = 'Term\tDescription\tOverlap\tp-value\tCorrected p-value\n';
+
+    data.forEach(row => {
+      const overlap = row['Overlap'].map(g => g.gene).join(',');
+      tsv +=
+        `${row['Term']}\t${row['Description']}\t${overlap}\t${row['p-value']}\t${row['corrected p-value']}\n`;
+    });
+
+    const blob = new Blob([tsv], {
+      type: 'text/tab-separated-values;charset=utf-8;'
+    });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'enrichment_results.tsv';
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  });
 </script>
+
 <style>
   iframe {
     width: 100%;

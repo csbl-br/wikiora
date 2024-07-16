@@ -1,6 +1,7 @@
 # WikiORA - Gene Over-Representation Analysis
 
-![WikiORA Example Workflow](https://wikiora.toolforge.org/static/example.png)
+![WikiORA Example Workflow](https://wikiora.toolforge.org/static/example.png#gh-light-mode-only)
+![WikiORA Example Workflow](https://i.imgur.com/mwU0BbL.png#gh-dark-mode-only)
 
 WikiORA is a tool designed to simplify the process of gene set over-representation analysis by integrating data from Wikidata and Wikipedia. Our aim is to provide an easy-to-use platform for researchers to identify significantly enriched gene sets in their data, using a combination of curated gene sets from various sources.
 

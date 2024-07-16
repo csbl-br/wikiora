@@ -11,6 +11,7 @@ import random
 import os
 
 app = Flask(__name__, static_url_path="/static")
+__version__ = "0.1.0"
 
 
 # Route to serve robots.txt

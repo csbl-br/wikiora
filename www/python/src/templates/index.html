@@ -77,7 +77,7 @@
       return gene.trim().length > 0;
     });
     document.getElementById('gene-count').textContent = 'Number of genes: ' + genes.length;
-    if (genes.length > 100) {
+    if (genes.length > 50) {
       document.getElementById('enrich-form').method = 'post';
     } else {
       document.getElementById('enrich-form').method = 'get';

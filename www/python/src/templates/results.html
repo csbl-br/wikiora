@@ -3,6 +3,15 @@
 {% block content %}
 <div class="container-fluid">
   <h1 class="mt-5">Over Representation Analysis Results</h1>
+  
+  <!-- Analysis Type Buttons -->
+  <div class="analysis-buttons mb-3">
+    <button class="btn btn-primary" onclick="changeAnalysisType('cell_type_markers')">Cell Type Markers</button>
+    <button class="btn btn-primary" onclick="changeAnalysisType('biological_processes')">Biological Processes</button>
+    <button class="btn btn-primary" onclick="changeAnalysisType('molecular_functions')">Molecular Functions</button>
+    <button class="btn btn-primary" onclick="changeAnalysisType('cellular_components')">Cellular Components</button>
+  </div>
+
   <div class="row">
     <div class="col-md-6" style="padding: 10px;">
       <div class="card h-100">
@@ -110,13 +119,16 @@
   <a href="/" class="btn btn-secondary mt-3">Back</a>
 </div>
 <script>
-  $(document).ready(function () {
+  document.addEventListener('DOMContentLoaded', function () {
     $('#results').DataTable({
       "order": [
         [4, "asc"]
       ], // Sort by the fifth column (p-value)
       "pageLength": 5 // Show only 5 processes at a time
     });
+
+    const analysisType = new URLSearchParams(window.location.search).get('analysis_type');
+    highlightSelectedButton(analysisType);
   });
 
   function showWikipedia(url) {
@@ -134,6 +146,28 @@
       element.innerHTML = '<i class="fas fa-plus"></i> expand';
     }
   };
+
+  function changeAnalysisType(analysisType) {
+    const params = new URLSearchParams(window.location.search);
+    params.set('analysis_type', analysisType);
+    window.location.search = params.toString();
+  }
+
+  function highlightSelectedButton(selectedType) {
+    const buttons = document.querySelectorAll('.analysis-buttons .btn');
+    buttons.forEach(button => {
+      const buttonText = button.textContent.trim().toLowerCase().replace(/\s+/g, '_');
+      if (buttonText === selectedType) {
+        button.classList.add('btn-primary');
+        button.classList.remove('btn-secondary');
+        button.style.opacity = 1;
+      } else {
+        button.classList.add('btn-secondary');
+        button.classList.remove('btn-primary');
+        button.style.opacity = 0.5;
+      }
+    });
+  }
 
   document.getElementById('download-tsv').addEventListener('click', function () {
     const data = JSON.parse(`{{ results | tojson | safe }}`);
@@ -158,6 +192,7 @@
   });
 </script>
 
+
 <style>
   iframe {
     width: 100%;
@@ -167,9 +202,7 @@
 
   .foldable-content {
     padding: 0;
-    /* Remove any padding */
     margin: 0;
-    /* Remove any margin */
   }
 
   .fas {
@@ -210,13 +243,9 @@
     color: #3366CC;
     text-decoration: none;
     margin: 0;
-    /* Remove any margin */
     padding: 0;
-    /* Remove any padding */
     line-height: normal;
-    /* Set a normal line-height */
     display: inline;
-    /* Ensure display is set to inline */
   }
 
   .wiki-link:hover {
@@ -229,6 +258,16 @@
 
   .foldable-content a {
     font-style: italic;
+  }
+
+  .analysis-buttons {
+    display: flex;
+    justify-content: space-around;
+  }
+
+  .analysis-buttons .btn {
+    flex: 1;
+    margin: 5px;
   }
 </style>
 {% endblock %}

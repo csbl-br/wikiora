@@ -23,14 +23,14 @@
   <form id="enrich-form" action="/enrich" method="get">
     <div class="form-group">
       <label for="organism">Organism</label>
-      <select class="form-control" id="organism" name="organism" onchange="fetchExampleGenes()">
+      <select class="form-control" id="organism" name="organism">
         <option value="human">Human</option>
         <option value="mouse">Mouse</option>
       </select>
     </div>
     <div class="form-group">
       <label for="analysis_type">Analysis Type</label>
-      <select class="form-control" id="analysis_type" name="analysis_type" onchange="fetchExampleGenes()">
+      <select class="form-control" id="analysis_type" name="analysis_type">
         <option value="cell_type_markers">Cell Type Markers</option>
         <option value="biological_processes">Biological Processes</option>
         <option value="molecular_functions">Molecular Functions</option>
@@ -40,7 +40,8 @@
     <div class="form-group">
       <label for="gene_list">Gene List</label>
       <textarea class="form-control" id="gene_list" name="gene_list" rows="5" oninput="updateGeneCount()"
-        ondragover="handleDragOver(event)" ondrop="handleFileSelect(event)"></textarea>
+        ondragover="handleDragOver(event)" ondrop="handleFileSelect(event)"
+        placeholder='Enter a gene list, drop a .txt file, or click on "Randomize".'></textarea>
       <small id="gene-count" class="form-text text-muted">Number of genes: 0</small>
     </div>
     <p class="small text-muted">
@@ -113,11 +114,9 @@
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.onreadystatechange = function () {
       if (xhr.readyState == 4 && xhr.status == 200) {
-        if (!document.getElementById('gene_list').disabled) {
-          document.getElementById('gene_list').value = xhr.responseText;
-          document.getElementById('example-note').style.display = 'block';
-          updateGeneCount();
-        }
+        document.getElementById('gene_list').value = xhr.responseText;
+        document.getElementById('example-note').style.display = 'block';
+        updateGeneCount();
       } else if (xhr.readyState == 4) {
         console.error('Error fetching example genes:', xhr.statusText);
         alert('Failed to fetch example genes. Please try again.');
@@ -125,7 +124,5 @@
     };
     xhr.send('organism=' + organism + '&analysis_type=' + analysisType);
   }
-
-  window.onload = fetchExampleGenes;
 </script>
 {% endblock %}

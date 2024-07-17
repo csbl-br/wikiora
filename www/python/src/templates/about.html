@@ -16,8 +16,16 @@
       (and its Wikipedia page) is calculated.</li>
     <li>The p-value is calculated using the hypergeometric test, representing the probability of observing at least as
       many overlapping genes by chance.</li>
-    <li>The Bonferroni correction is applied to account for multiple testing and adjust the p-values.</li>
+    <li>The Benjamini-Hochberg correction</a> is applied to account for multiple testing and
+      adjust the p-values.</li>
+    <li>The odds ratio (provided in the download file) is calculated as follows: oddsRatio = (1.0 * a * d) /
+      Math.max(1.0 * b *
+      c, 1).</li>
+    <li>The combined score (provided in the download file) is calculated as follows: combinedScore = -log(p) *
+      oddsRatio.</li>
     <li>Results are sorted by p-value to highlight the most significantly over-represented terms.</li>
+  </ol>
+  <li>Results are sorted by p-value to highlight the most significantly over-represented terms.</li>
   </ol>
 
   <h3>Data Sources</h3>

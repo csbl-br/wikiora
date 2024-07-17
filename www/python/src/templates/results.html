@@ -18,7 +18,7 @@
                 <th>Overlap</th>
                 <th>Count</th>
                 <th>p-value</th>
-                <th>Corrected p-value</th>
+                <th>q-value</th>
               </tr>
             </thead>
             <tbody>
@@ -40,7 +40,7 @@
                 </td>
                 <td>{{ row['Count'] }}</td>
                 <td>{{ '%.2e'|format(row['p-value']) }}</td>
-                <td>{{ '%.2e'|format(row['corrected p-value']) }}</td>
+                <td>{{ '%.2e'|format(row['q-value']) }}</td>
               </tr>
               {% endfor %}
             </tbody>
@@ -96,13 +96,13 @@
                 class="wiki-link">p-value</a> is calculated using the hypergeometric test, representing the probability
               of observing at least as many overlapping genes by chance.</li>
             <li>The <a href="javascript:void(0)"
-                onclick="showWikipedia('https://en.wikipedia.org/wiki/Bonferroni_correction')"
-                class="wiki-link">Bonferroni correction</a> is applied to account for multiple testing and adjust the
-              p-values.</li>
+                onclick="showWikipedia('https://en.wikipedia.org/wiki/Benjamini%E2%80%93Hochberg_procedure')"
+                class="wiki-link">Benjamini-Hochberg correction</a> is applied to account for multiple testing and
+              adjust the p-values.</li>
             <li>Results are sorted by p-value to highlight the most significantly over-represented terms.</li>
           </ol>
-          <p>The table shows the term, description, overlapping genes, count, p-value, and Bonferroni-corrected p-value.
-            Clicking on a description displays the corresponding Wikipedia page.</p>
+          <p>The table shows the term, description, overlapping genes, count, p-value, q-value, odds ratio, and combined
+            score. Clicking on a description displays the corresponding Wikipedia page.</p>
         </div>
       </div>
     </div>
@@ -137,12 +137,12 @@
 
   document.getElementById('download-tsv').addEventListener('click', function () {
     const data = JSON.parse(`{{ results | tojson | safe }}`);
-    let tsv = 'Term\tDescription\tOverlap\tp-value\tCorrected p-value\n';
+    let tsv = 'Term\tDescription\tOverlap\tCount\tp-value\tq-value\tOdds Ratio\tCombined Score\n';
 
     data.forEach(row => {
       const overlap = row['Overlap'].map(g => g.gene).join(',');
       tsv +=
-        `${row['Term']}\t${row['Description']}\t${overlap}\t${row['p-value']}\t${row['corrected p-value']}\n`;
+        `${row['Term']}\t${row['Description']}\t${overlap}\t${row['Count']}\t${row['p-value']}\t${row['q-value']}\t${row['Odds Ratio']}\t${row['Combined Score']}\n`;
     });
 
     const blob = new Blob([tsv], {

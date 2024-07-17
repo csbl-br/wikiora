@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container-fluid">
   <h1 class="mt-5">Over Representation Analysis Results</h1>
-  
+
   <!-- Analysis Type Buttons -->
   <div class="analysis-buttons mb-3">
     <button class="btn btn-primary" onclick="changeAnalysisType('cell_type_markers')">Cell Type Markers</button>
@@ -117,10 +117,12 @@
     </div>
   </div>
   <a href="/" class="btn btn-secondary mt-3">Back</a>
-  
+
   <form id="hidden-params" style="display: none;">
-    <input type="hidden" name="gene_list" value="{{ request.args.get('gene_list', request.form.get('gene_list', '')) }}">
-    <input type="hidden" name="analysis_type" value="{{ request.args.get('analysis_type', request.form.get('analysis_type', '')) }}">
+    <input type="hidden" name="gene_list"
+      value="{{ request.args.get('gene_list', request.form.get('gene_list', '')) }}">
+    <input type="hidden" name="analysis_type"
+      value="{{ request.args.get('analysis_type', request.form.get('analysis_type', '')) }}">
     <input type="hidden" name="organism" value="{{ request.args.get('organism', request.form.get('organism', '')) }}">
   </form>
 </div>
@@ -171,7 +173,7 @@
     params.set('analysis_type', analysisType);
 
     const geneList = params.get('gene_list').split(/[\s,;]+/).filter(gene => gene.trim().length > 0);
-    if (geneList.length > 100) {
+    if (geneList.length > 50) {
       // Switch to POST
       const form = document.createElement('form');
       form.method = 'POST';

@@ -11,7 +11,7 @@ import random
 import os
 
 app = Flask(__name__, static_url_path="/static")
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 
 
 # Route to serve robots.txt
@@ -146,42 +146,48 @@ def api_enrich():
     # Total number of genes in the background
     M = sum(len(details["genes"]) for details in gene_sets.values())
     N = len(genes)
+    total_gene_sets = len(gene_sets)
 
+    all_results = []
     for term, details in gene_sets.items():
         overlap = set(genes).intersection(details["genes"])
-        if overlap:
-            x = len(overlap)
-            n = len(details["genes"])
-            p_value = hypergeometric_test(M, n, N, x)
-            overlap_info = []
-            for gene in overlap:
-                gene_info = genes_data.get(gene, {})
-                gene_link = gene_info.get(
-                    "wikipediaLink", f"https://en.wikipedia.org/wiki/{gene}"
-                )
-                gene_status = gene_info.get("pageStatus", "red")
-                overlap_info.append(
-                    {"gene": gene, "link": gene_link, "status": gene_status}
-                )
-            results.append(
-                {
-                    "Term": term,
-                    "Description": details["description"],
-                    "Wikipedia URL": details["wikipedia_url"],
-                    "Overlap": overlap_info,
-                    "Count": x,
-                    "p-value": p_value,
-                }
+        x = len(overlap)
+        n = len(details["genes"])
+        p_value = hypergeometric_test(M, n, N, x)
+        odds_ratio = (1.0 * x * (M - n - N + x)) / max(1.0 * (n - x) * (N - x), 1)
+        combined_score = -np.log10(p_value) * odds_ratio
+        overlap_info = []
+        for gene in overlap:
+            gene_info = genes_data.get(gene, {})
+            gene_link = gene_info.get(
+                "wikipediaLink", f"https://en.wikipedia.org/wiki/{gene}"
             )
+            gene_status = gene_info.get("pageStatus", "red")
+            overlap_info.append(
+                {"gene": gene, "link": gene_link, "status": gene_status}
+            )
+        all_results.append(
+            {
+                "Term": term,
+                "Description": details["description"],
+                "Wikipedia URL": details["wikipedia_url"],
+                "Overlap": overlap_info,
+                "Count": x,
+                "p-value": p_value,
+                "Odds Ratio": odds_ratio,
+                "Combined Score": combined_score,
+            }
+        )
 
-    if results:
-        results_df = pd.DataFrame(results)
-        results_df["corrected p-value"] = multipletests(
-            results_df["p-value"], method="bonferroni"
-        )[1]
+    if all_results:
+        results_df = pd.DataFrame(all_results)
+        # Apply Benjamini-Hochberg correction considering the total number of gene sets
+        results_df["q-value"] = multipletests(results_df["p-value"], method="fdr_bh")[1]
+        # Filter to include only those sets with overlap >= 1
+        results_df = results_df[results_df["Count"] >= 1]
         results_df = results_df.sort_values(by="p-value").head(
             10
-        )  # Show only the top 10 enriched sets
+        )  # Show only the top 10 enriched sets with lowest p-values
         plot_results(results_df)
         results = results_df.to_dict(orient="records")
 
@@ -211,12 +217,12 @@ def about():
 # Function to plot the results
 def plot_results(df):
     plt.figure(figsize=(10, 8))
-    df["-logP"] = -np.log10(df["corrected p-value"])
+    df["-logP"] = -np.log10(df["q-value"])
     sns.barplot(x="-logP", y="Description", data=df, palette="viridis")
     plt.axvline(-np.log10(0.05), color="red", linestyle="--", linewidth=1)
-    plt.xlabel("-log(corrected p-value)")
+    plt.xlabel("-log(corrected q-value)")
     plt.ylabel("GO Term Description")
-    plt.title("Top 10 Enriched Terms by Corrected p-value")
+    plt.title("Top 10 Enriched Terms by q-value (FDR 0.05)")
     plt.tight_layout()
     plt.savefig("static/enrichment_plot.png")
 

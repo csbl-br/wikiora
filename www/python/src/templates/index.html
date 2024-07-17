@@ -21,7 +21,7 @@
     </p>
   </div>
 
-  <form action="/enrich" method="get">
+  <form id="enrich-form" action="/enrich" method="get">
     <div class="form-group">
       <label for="organism">Organism</label>
       <select class="form-control" id="organism" name="organism" onchange="fetchExampleGenes()">
@@ -40,13 +40,14 @@
     </div>
     <div class="form-group">
       <label for="gene_list">Gene List</label>
-      <textarea class="form-control" id="gene_list" name="gene_list" rows="5"></textarea>
+      <textarea class="form-control" id="gene_list" name="gene_list" rows="5" oninput="updateGeneCount()"></textarea>
+      <small id="gene-count" class="form-text text-muted">Number of genes: 0</small>
     </div>
     <p class="small text-muted">
       Genes in the list may be separated by tabs, semicolons, commas, or new lines.
     </p>
     <button type="button" class="btn btn-secondary" onclick="fetchExampleGenes()">Randomize</button>
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="submit" class="btn btn-primary" id="submit-btn">Submit</button>
   </form>
   <br>
   <p id="example-note" style="display: none;">
@@ -64,9 +65,23 @@
       if (xhr.readyState == 4 && xhr.status == 200) {
         document.getElementById('gene_list').value = xhr.responseText;
         document.getElementById('example-note').style.display = 'block';
+        updateGeneCount();
       }
     };
     xhr.send('organism=' + organism + '&analysis_type=' + analysisType);
+  }
+
+  function updateGeneCount() {
+    var geneList = document.getElementById('gene_list').value;
+    var genes = geneList.split(/[\s,;]+/).filter(function (gene) {
+      return gene.trim().length > 0;
+    });
+    document.getElementById('gene-count').textContent = 'Number of genes: ' + genes.length;
+    if (genes.length > 100) {
+      document.getElementById('enrich-form').method = 'post';
+    } else {
+      document.getElementById('enrich-form').method = 'get';
+    }
   }
 
   window.onload = fetchExampleGenes;

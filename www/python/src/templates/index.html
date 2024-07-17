@@ -6,8 +6,7 @@
 
   <img src="{{ url_for('static', filename='example.png') }}" class="img-fluid" alt="Example Workflow">
   <p class="mt-2 text-center small text-muted">WikiORA integrates Wikidata, Gene Ontology, PanglaoDB, and Wikipedia for
-    simple,
-    encyclopedic enrichment analysis.</p>
+    simple, encyclopedic enrichment analysis.</p>
 
   <div class="mt-4">
     <p>
@@ -40,7 +39,8 @@
     </div>
     <div class="form-group">
       <label for="gene_list">Gene List</label>
-      <textarea class="form-control" id="gene_list" name="gene_list" rows="5" oninput="updateGeneCount()"></textarea>
+      <textarea class="form-control" id="gene_list" name="gene_list" rows="5" oninput="updateGeneCount()"
+        ondragover="handleDragOver(event)" ondrop="handleFileSelect(event)"></textarea>
       <small id="gene-count" class="form-text text-muted">Number of genes: 0</small>
     </div>
     <p class="small text-muted">
@@ -55,20 +55,35 @@
   </p>
 </div>
 <script>
-  function fetchExampleGenes() {
-    var organism = document.getElementById('organism').value;
-    var analysisType = document.getElementById('analysis_type').value;
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/example_genes', true);
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState == 4 && xhr.status == 200) {
-        document.getElementById('gene_list').value = xhr.responseText;
-        document.getElementById('example-note').style.display = 'block';
-        updateGeneCount();
+  function handleDragOver(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    event.dataTransfer.dropEffect = 'copy';
+  }
+
+  function handleFileSelect(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    var files = event.dataTransfer.files;
+    if (files.length > 0) {
+      var file = files[0];
+      if (file.type === 'text/plain') {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          document.getElementById('gene_list').value = e.target.result;
+          updateGeneCount();
+          disableDrop();
+        };
+        reader.onerror = function (e) {
+          console.error('Error reading file:', e);
+          alert('Failed to read file. Please try again.');
+        };
+        reader.readAsText(file);
+      } else {
+        alert('Please drop a valid .txt file.');
       }
-    };
-    xhr.send('organism=' + organism + '&analysis_type=' + analysisType);
+    }
   }
 
   function updateGeneCount() {
@@ -82,6 +97,33 @@
     } else {
       document.getElementById('enrich-form').method = 'get';
     }
+  }
+
+  function disableDrop() {
+    var textarea = document.getElementById('gene_list');
+    textarea.removeEventListener('dragover', handleDragOver);
+    textarea.removeEventListener('drop', handleFileSelect);
+  }
+
+  function fetchExampleGenes() {
+    var organism = document.getElementById('organism').value;
+    var analysisType = document.getElementById('analysis_type').value;
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/example_genes', true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState == 4 && xhr.status == 200) {
+        if (!document.getElementById('gene_list').disabled) {
+          document.getElementById('gene_list').value = xhr.responseText;
+          document.getElementById('example-note').style.display = 'block';
+          updateGeneCount();
+        }
+      } else if (xhr.readyState == 4) {
+        console.error('Error fetching example genes:', xhr.statusText);
+        alert('Failed to fetch example genes. Please try again.');
+      }
+    };
+    xhr.send('organism=' + organism + '&analysis_type=' + analysisType);
   }
 
   window.onload = fetchExampleGenes;

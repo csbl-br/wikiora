@@ -117,6 +117,12 @@
     </div>
   </div>
   <a href="/" class="btn btn-secondary mt-3">Back</a>
+  
+  <form id="hidden-params" style="display: none;">
+    <input type="hidden" name="gene_list" value="{{ request.args.get('gene_list', request.form.get('gene_list', '')) }}">
+    <input type="hidden" name="analysis_type" value="{{ request.args.get('analysis_type', request.form.get('analysis_type', '')) }}">
+    <input type="hidden" name="organism" value="{{ request.args.get('organism', request.form.get('organism', '')) }}">
+  </form>
 </div>
 <script>
   document.addEventListener('DOMContentLoaded', function () {
@@ -127,7 +133,7 @@
       "pageLength": 5 // Show only 5 processes at a time
     });
 
-    const analysisType = new URLSearchParams(window.location.search).get('analysis_type');
+    const analysisType = '{{ request.args.get("analysis_type", request.form.get("analysis_type", "")) }}';
     highlightSelectedButton(analysisType);
   });
 
@@ -149,8 +155,42 @@
 
   function changeAnalysisType(analysisType) {
     const params = new URLSearchParams(window.location.search);
+    const geneListElement = document.querySelector('input[name="gene_list"]');
+    const organismElement = document.querySelector('input[name="organism"]');
+
+    if (geneListElement) {
+      // Extract gene list from hidden input if it exists
+      params.set('gene_list', geneListElement.value);
+    }
+
+    if (organismElement) {
+      // Extract organism from hidden input if it exists
+      params.set('organism', organismElement.value);
+    }
+
     params.set('analysis_type', analysisType);
-    window.location.search = params.toString();
+
+    const geneList = params.get('gene_list').split(/[\s,;]+/).filter(gene => gene.trim().length > 0);
+    if (geneList.length > 100) {
+      // Switch to POST
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = '/enrich';
+
+      params.forEach((value, key) => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = value;
+        form.appendChild(input);
+      });
+
+      document.body.appendChild(form);
+      form.submit();
+    } else {
+      // Use GET
+      window.location.search = params.toString();
+    }
   }
 
   function highlightSelectedButton(selectedType) {
@@ -191,7 +231,6 @@
     document.body.removeChild(link);
   });
 </script>
-
 
 <style>
   iframe {

@@ -116,9 +116,21 @@ def example_genes():
 
 @app.route("/api/enrich", methods=["GET", "POST"])
 def api_enrich():
-    organism = request.args.get("organism") if request.method == "GET" else request.form.get("organism")
-    analysis_type = request.args.get("analysis_type") if request.method == "GET" else request.form.get("analysis_type")
-    gene_list = request.args.get("gene_list") if request.method == "GET" else request.form.get("gene_list")
+    organism = (
+        request.args.get("organism")
+        if request.method == "GET"
+        else request.form.get("organism")
+    )
+    analysis_type = (
+        request.args.get("analysis_type")
+        if request.method == "GET"
+        else request.form.get("analysis_type")
+    )
+    gene_list = (
+        request.args.get("gene_list")
+        if request.method == "GET"
+        else request.form.get("gene_list")
+    )
     genes = parse_gene_list(gene_list)
     results = []
 
@@ -196,13 +208,24 @@ def api_enrich():
 
 @app.route("/enrich", methods=["GET", "POST"])
 def enrich():
-    organism = request.args.get("organism") if request.method == "GET" else request.form.get("organism")
-    analysis_type = request.args.get("analysis_type") if request.method == "GET" else request.form.get("analysis_type")
-    gene_list = request.args.get("gene_list") if request.method == "GET" else request.form.get("gene_list")
+    organism = (
+        request.args.get("organism")
+        if request.method == "GET"
+        else request.form.get("organism")
+    )
+    analysis_type = (
+        request.args.get("analysis_type")
+        if request.method == "GET"
+        else request.form.get("analysis_type")
+    )
+    gene_list = (
+        request.args.get("gene_list")
+        if request.method == "GET"
+        else request.form.get("gene_list")
+    )
     response = api_enrich()
     results = response.get_json()
     return render_template("results.html", results=results)
-
 
 
 @app.route("/download")
@@ -222,7 +245,7 @@ def plot_results(df):
     sns.barplot(x="-logP", y="Description", data=df, palette="viridis")
     plt.axvline(-np.log10(0.05), color="red", linestyle="--", linewidth=1)
     plt.xlabel("-log(corrected q-value)")
-    plt.ylabel("GO Term Description")
+    plt.ylabel("Gene Set Description")
     plt.title("Top 10 Enriched Terms by q-value (FDR 0.05)")
     plt.tight_layout()
     plt.savefig("static/enrichment_plot.png")

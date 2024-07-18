@@ -1,2 +1,1 @@
-# static/version.txt
 0.1.4

@@ -2,58 +2,61 @@
 
 {% block content %}
 <div class="container">
-  <h1 class="mt-5">Gene Over-Representation Analysis based on Wikidata</h1>
-
-  <img src="{{ url_for('static', filename='example.png') }}" class="img-fluid" alt="Example Workflow">
-  <p class="mt-2 text-center small text-muted">WikiORA integrates Wikidata, Gene Ontology, PanglaoDB, and Wikipedia for
-    simple, encyclopedic enrichment analysis.</p>
-
-  <div class="mt-4">
-    <p>
-      WikiORA is a helper for Over-Representation (i.e. enrichment) Analysis of gene sets based on <a
-        href="https://en.wikipedia.org" target="_blank">Wikipedia</a> and
-      <a href="https://www.wikidata.org" target="_blank">Wikidata</a>.</p>
-    <p> For each species (human and mouse), there are four sources of gene sets:
-      genes linked to cell types or
-      <a href="http://geneontology.org" target="_blank">Gene Ontology</a> biological processes, molecular functions, and
-      cellular components.
-    </p>
+  <div class="row">
+    <div class="col-md-9 d-flex flex-column justify-content-end">
+      <h3 class="mt-5"> Gene Set Over-Representation Analysis...</h3>
+      <div class="mt-4">
+        <p>...simplified by Wikipedia and Wikidata. </p>
+        <p> Two species. Four gene libraries. Enter a gene list and explore:</p>
+      </div>
+    </div>
+    <div class="col-md-3 d-flex align-items-end" style="text-align: center;">
+      <img src="{{ url_for('static', filename='logo.svg') }}" width="80%" alt="">
+    </div>
   </div>
 
-  <form id="enrich-form" action="/enrich" method="get">
-    <div class="form-group">
-      <label for="organism">Organism</label>
-      <select class="form-control" id="organism" name="organism">
-        <option value="human">Human</option>
-        <option value="mouse">Mouse</option>
-      </select>
+  <div class="row mt-4">
+    <div class="col">
+      <div class="card h-100">
+        <div class="card-body">
+          <form id="enrich-form" action="/enrich" method="get">
+            <div class="form-group">
+              <label for="organism">Organism</label>
+              <select class="form-control" id="organism" name="organism">
+                <option value="human">Human</option>
+                <option value="mouse">Mouse</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="analysis_type">Analysis Type</label>
+              <select class="form-control" id="analysis_type" name="analysis_type">
+                <option value="cell_type_markers">Cell Type Markers</option>
+                <option value="biological_processes">Biological Processes</option>
+                <option value="molecular_functions">Molecular Functions</option>
+                <option value="cellular_components">Cellular Components</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="gene_list">Gene List</label>
+              <textarea class="form-control" id="gene_list" name="gene_list" rows="5" oninput="updateGeneCount()"
+                ondragover="handleDragOver(event)" ondrop="handleFileSelect(event)"
+                placeholder='Enter a gene list, drop a .txt file, or click on "Randomize".'></textarea>
+              <small id="gene-count" class="form-text text-muted">Number of genes: 0</small>
+            </div>
+            <p class="small text-muted">
+              Genes in the list may be separated by tabs, semicolons, commas, or new lines.
+            </p>
+            <button type="button" class="btn btn-secondary" onclick="fetchExampleGenes()">Randomize</button>
+            <button type="submit" class="btn btn-primary" id="submit-btn">Submit</button>
+          </form>
+          <br>
+          <p id="example-note" style="display: none;">
+            Sample gene set randomly selected. Can you guess the process/function/component/cell type? 🧬🧫🔍
+          </p>
+        </div>
+      </div>
     </div>
-    <div class="form-group">
-      <label for="analysis_type">Analysis Type</label>
-      <select class="form-control" id="analysis_type" name="analysis_type">
-        <option value="cell_type_markers">Cell Type Markers</option>
-        <option value="biological_processes">Biological Processes</option>
-        <option value="molecular_functions">Molecular Functions</option>
-        <option value="cellular_components">Cellular Components</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="gene_list">Gene List</label>
-      <textarea class="form-control" id="gene_list" name="gene_list" rows="5" oninput="updateGeneCount()"
-        ondragover="handleDragOver(event)" ondrop="handleFileSelect(event)"
-        placeholder='Enter a gene list, drop a .txt file, or click on "Randomize".'></textarea>
-      <small id="gene-count" class="form-text text-muted">Number of genes: 0</small>
-    </div>
-    <p class="small text-muted">
-      Genes in the list may be separated by tabs, semicolons, commas, or new lines.
-    </p>
-    <button type="button" class="btn btn-secondary" onclick="fetchExampleGenes()">Randomize</button>
-    <button type="submit" class="btn btn-primary" id="submit-btn">Submit</button>
-  </form>
-  <br>
-  <p id="example-note" style="display: none;">
-    Sample gene set randomly selected. Can you guess the process/function/component/cell type? 🧬🧫🔍
-  </p>
+  </div>
 </div>
 <script>
   function handleDragOver(event) {
@@ -125,4 +128,25 @@
     xhr.send('organism=' + organism + '&analysis_type=' + analysisType);
   }
 </script>
+
+<style>
+  .card {
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .card-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card-body img {
+    flex: 1;
+  }
+</style>
 {% endblock %}

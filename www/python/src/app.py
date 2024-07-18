@@ -12,7 +12,7 @@ import os
 import matplotlib.colors as mcolors  # Add this import
 
 app = Flask(__name__, static_url_path="/static")
-__version__ = "0.1.3"
+__version__ = "0.1.4"
 
 
 # Route to serve robots.txt

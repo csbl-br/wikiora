@@ -76,7 +76,7 @@
     <div class="col-lg-6" style="padding: 10px;">
       <div class="card h-100">
         <div class="card-body">
-          <h3>Plot</h3>
+          <h3>Plots</h3>
           {% if results %}
           <img src="{{ url_for('static', filename='enrichment_plot.png') }}" class="img-fluid mt-3"
             alt="Over Representation Analysis Plot">
@@ -213,12 +213,12 @@
 
   document.getElementById('download-tsv').addEventListener('click', function () {
     const data = JSON.parse(`{{ results | tojson | safe }}`);
-    let tsv = 'Term\tDescription\tOverlap\tCount\tp-value\tq-value\tOdds Ratio\tCombined Score\n';
+    let tsv = 'Term\tDescription\tOverlap\tCount\tp-value\tq-value\tGene Ratio\tOdds Ratio\tCombined Score\n';
 
     data.forEach(row => {
       const overlap = row['Overlap'].map(g => g.gene).join(',');
       tsv +=
-        `${row['Term']}\t${row['Description']}\t${overlap}\t${row['Count']}\t${row['p-value']}\t${row['q-value']}\t${row['Odds Ratio']}\t${row['Combined Score']}\n`;
+        `${row['Term']}\t${row['Description']}\t${overlap}\t${row['Count']}\t${row['p-value']}\t${row['q-value']}\t${row['Gene Ratio']}\t${row['Odds Ratio']}\t${row['Combined Score']}\n`;
     });
 
     const blob = new Blob([tsv], {

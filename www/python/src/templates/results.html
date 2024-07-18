@@ -78,8 +78,8 @@
         <div class="card-body">
           <h3>Plots</h3>
           {% if results %}
-          <img src="{{ url_for('static', filename='enrichment_plot.png') }}" class="img-fluid mt-3"
-            alt="Over Representation Analysis Plot">
+          <div id="barplot"></div>
+          <div id="dotplot"></div>
           {% endif %}
         </div>
       </div>
@@ -127,6 +127,166 @@
   </form>
 </div>
 <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const results = JSON.parse(`{{ results | tojson | safe }}`);
+
+    // Prepare data for barplot
+    const barplotData = results.map(result => ({
+      description: result['Description'],
+      logP: -Math.log10(result['q-value']),
+      qValue: result['q-value']
+    }));
+
+    // Prepare data for dotplot and sort by geneRatio
+    const dotplotData = results.map(result => ({
+      description: result['Description'],
+      geneRatio: result['Gene Ratio'],
+      count: Math.min(result['Count'], 30), // Cap the Count values at 30 for dot sizes
+      qValue: result['q-value']
+    })).sort((a, b) => b.geneRatio - a.geneRatio);
+
+    // Define a custom colorscale where 0 is bluer and 1 is whiter
+    const customBlues = [
+      [0, 'rgb(8,48,107)'],
+      [0.005, 'rgb(8,81,156)'],
+      [0.01, 'rgb(33,113,181)'],
+      [0.04, 'rgb(66,146,198)'],
+      [0.06, 'rgb(107,174,214)'],
+      [0.2, 'rgb(158,202,225)'],
+      [0.6, 'rgb(198,219,239)'],
+      [0.8, 'rgb(222,235,247)'],
+      [1, 'rgb(247,251,255)']
+    ];
+
+    // Plot configuration
+    const config = {
+      toImageButtonOptions: {
+        format: 'svg', // One of png, svg, jpeg, webp
+        filename: 'plot',
+        height: 400,
+        width: 800,
+        scale: 1 // Multiply title/legend/axis/canvas sizes by this factor
+      },
+      modeBarButtonsToAdd: [{
+        name: 'Download SVG',
+        icon: Plotly.Icons.camera,
+        click: function (gd) {
+          Plotly.downloadImage(gd, {
+            format: 'svg',
+            filename: 'plot',
+            height: 400,
+            width: 800
+          });
+        }
+      }]
+    };
+
+    // Configuration for the colorbar
+    const colorbarConfig = {
+      title: 'q-value',
+      tickformat: '.2f', // Format ticks to show up to 3 decimal places
+      cmin: 0, // Lock colormap range to 0
+      cmax: 1 // Lock colormap range to 1
+    };
+
+    // Plot barplot
+    Plotly.newPlot('barplot', [{
+      x: barplotData.map(d => d.logP),
+      y: barplotData.map(d => d.description),
+      type: 'bar',
+      orientation: 'h',
+      marker: {
+        color: barplotData.map(d => d.qValue),
+        colorscale: customBlues,
+        showscale: true,
+        colorbar: colorbarConfig,
+        cmin: 0,
+        cmax: 1,
+      }
+    }], {
+      title: 'Top 10 Enriched Terms by q-value (adjusted p-value)',
+      xaxis: {
+        title: '-log(q-value)',
+        showline: true
+      },
+      yaxis: {
+        title: '',
+        showline: true,
+        automargin: true, // Ensure labels fit in the container
+        autorange: 'reversed'
+      },
+      shapes: [{
+        type: 'line',
+        x0: -Math.log10(0.05),
+        y0: 0,
+        x1: -Math.log10(0.05),
+        y1: 1,
+        xref: 'x',
+        yref: 'paper',
+        line: {
+          color: 'red',
+          width: 2,
+          dash: 'dot'
+        }
+      }],
+      margin: {
+        l: 150, // Increase left margin to fit labels
+        r: 50,
+        t: 100,
+        b: 50
+      },
+      autosize: true
+    }, {
+      responsive: true,
+      ...config
+    });
+
+    // Plot dotplot
+    Plotly.newPlot('dotplot', [{
+      x: dotplotData.map(d => d.geneRatio),
+      y: dotplotData.map(d => d.description),
+      mode: 'markers',
+      marker: {
+        size: dotplotData.map(d => Math.sqrt(d.count) * 4), // Slightly bigger dots
+        color: dotplotData.map(d => d.qValue),
+        colorscale: customBlues,
+        line: {
+          color: 'black', // Black boundary
+          width: 1
+        },
+        showscale: true,
+        fixedrange: true,
+        colorbar: colorbarConfig,
+        cmin: 0,
+        cmax: 1,
+      }
+    }], {
+      title: 'Top 10 Enriched Terms by Gene Ratio',
+      xaxis: {
+        title: 'Gene Ratio (overlap/set length)',
+        showline: true
+      },
+      yaxis: {
+        title: '',
+        showline: true,
+        automargin: true, // Ensure labels fit in the container
+        autorange: 'reversed'
+      },
+      margin: {
+        l: 150, // Increase left margin to fit labels
+        r: 50,
+        t: 100,
+        b: 50
+      },
+      autosize: true
+    }, {
+      responsive: true,
+      ...config
+    });
+
+  });
+
+
   document.addEventListener('DOMContentLoaded', function () {
     $('#results').DataTable({
       "order": [

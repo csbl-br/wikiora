@@ -202,7 +202,6 @@ def api_enrich():
         results_df = results_df.sort_values(by="p-value").head(
             10
         )  # Show only the top 10 enriched sets with lowest p-values
-        plot_results(results_df)
         results = results_df.to_dict(orient="records")
 
     return jsonify(results)
@@ -240,6 +239,7 @@ def about():
     return render_template("about.html")
 
 
+# Not currently in use. May be used in the future as an API for download.
 def plot_results(df):
     # Calculate -logP for the barplot
     df["-logP"] = -np.log10(df["q-value"])

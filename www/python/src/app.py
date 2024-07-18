@@ -9,6 +9,7 @@ import numpy as np
 import json
 import random
 import os
+import matplotlib.colors as mcolors  # Add this import
 
 app = Flask(__name__, static_url_path="/static")
 __version__ = "0.1.2"
@@ -188,6 +189,7 @@ def api_enrich():
                 "p-value": p_value,
                 "Odds Ratio": odds_ratio,
                 "Combined Score": combined_score,
+                "Gene Ratio": x / n,  # Add Gene Ratio metric
             }
         )
 
@@ -238,17 +240,81 @@ def about():
     return render_template("about.html")
 
 
-# Function to plot the results
 def plot_results(df):
-    plt.figure(figsize=(10, 8))
+    # Calculate -logP for the barplot
     df["-logP"] = -np.log10(df["q-value"])
-    sns.barplot(x="-logP", y="Description", data=df, palette="viridis")
+
+    # Cap the Count values at 30 for dot sizes
+    df["Count"] = np.minimum(df["Count"], 30)
+
+    # Sort by Gene Ratio for dotplot
+    df_sorted_by_gene_ratio = df.sort_values(by="Gene Ratio", ascending=False)
+    plt.figure(figsize=(12, 12))
+
+    cmap = plt.cm.Blues_r
+
+    # Plot barplot
+    plt.subplot(2, 1, 1)
+    colors_barplot = cmap(df["q-value"])
+    barplot = sns.barplot(x="-logP", y="Description", data=df, palette=colors_barplot)
     plt.axvline(-np.log10(0.05), color="red", linestyle="--", linewidth=1)
-    plt.xlabel("-log(corrected q-value)")
-    plt.ylabel("Gene Set Description")
-    plt.title("Top 10 Enriched Terms by q-value (FDR 0.05)")
+    plt.xlabel("-log(q-value)", fontsize=14)
+    plt.ylabel("")
+    plt.title("Top 10 Enriched Terms by q-value", fontsize=16)
+    plt.xticks(fontsize=12)
+    plt.yticks(fontsize=12)
+
+    # Adding colorbar legend to barplot
+    sm = plt.cm.ScalarMappable(cmap=cmap, norm=plt.Normalize(vmin=0.0, vmax=1.0))
+    sm.set_array([])
+    cbar = plt.colorbar(sm, ax=barplot, orientation="vertical", pad=0.01)
+    cbar.set_label("q-value", fontsize=12)
+
+    # Plot dotplot
+    plt.subplot(2, 1, 2)
+    colors_dotplot = cmap(df_sorted_by_gene_ratio["q-value"])
+    dotplot = plt.scatter(
+        df_sorted_by_gene_ratio["Gene Ratio"],
+        df_sorted_by_gene_ratio["Description"],
+        s=df_sorted_by_gene_ratio["Count"] ** 0.7 * 23,
+        c=colors_dotplot,
+        edgecolors="black",  # Set the border color to black
+        linewidth=0.8,
+    )
+
+    cbar = plt.colorbar(sm, ax=plt.gca(), orientation="vertical", pad=0.01)
+    cbar.set_label("q-value", fontsize=12)
+
+    plt.xlabel("Gene Ratio (overlap/set length)", fontsize=14)
+    plt.ylabel("")
+    plt.title("Top 10 Enriched Terms by Gene Ratio", fontsize=16)
+    plt.xticks(fontsize=12)
+    plt.yticks(fontsize=12)
+    plt.gca().invert_yaxis()  # Invert the y-axis
+
+    # Adding dot size legend
+    example_sizes = [2, 10, 30]
+    for size in example_sizes:
+        plt.scatter(
+            [],
+            [],
+            c="k",
+            alpha=0.5,
+            s=size**0.7 * 23,
+            label=f'{size}{"+" if size == 30 else ""}',
+        )
+
+    plt.legend(
+        scatterpoints=1,
+        frameon=True,
+        labelspacing=1,
+        title="Count",
+        loc="lower right",
+        fontsize=12,
+    )
+
     plt.tight_layout()
-    plt.savefig("static/enrichment_plot.png")
+    plt.savefig("static/enrichment_plot.png", dpi=300)
 
 
 if __name__ == "__main__":

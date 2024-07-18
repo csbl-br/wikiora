@@ -86,11 +86,12 @@
     </div>
     <div class="col-lg-6" style="padding: 10px;">
       <div class="card h-100">
-        <div class="card-body">
+        <div class="card-body" style="margin-left: 30px; margin-right: 40px;">
           <h3>Methods</h3>
-          <p>This analysis was performed using a <a href="javascript:void(0)"
+          <p>This analysis was performed using a <a href=" javascript:void(0)"
               onclick="showWikipedia('https://en.wikipedia.org/wiki/Hypergeometric_test')"
-              class="wiki-link">hypergeometric test</a> to determine the
+              class="wiki-link">hypergeometric
+              test</a> to determine the
             <a href="javascript:void(0)"
               onclick="showWikipedia('https://en.wikipedia.org/wiki/Gene_set_enrichment_analysis')"
               class="wiki-link">over-representation</a> of specific gene sets within the provided list. The steps are as
@@ -112,6 +113,9 @@
           </ol>
           <p>The table shows the term, description, overlapping genes, count, p-value, q-value, odds ratio, and combined
             score. Clicking on a description displays the corresponding Wikipedia page.</p>
+
+          {% include '_data_sources_and_citing.html' %}
+
         </div>
       </div>
     </div>

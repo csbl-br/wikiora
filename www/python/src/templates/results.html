@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<div class="container-fluid">
+<div id="results-container" class="container-fluid">
   <!-- Analysis Type Buttons -->
   <div class="analysis-buttons mb-3">
     <button class="btn btn-primary" onclick="changeAnalysisType('cell_type_markers')">Cell Type Markers</button>
@@ -40,7 +40,8 @@
                   <div class="foldable-content" style="display:none" data-term="{{ row['Term'] }}">
                     {% for gene_info in row['Overlap'] %}
                     <a href="javascript:void(0)" onclick="showWikipedia('{{ gene_info.link }}')" class="wiki-link"
-                      style="color: {{ 'red' if gene_info.status == 'red' else 'blue' }}"><i>{{ gene_info.gene }}</i></a>{% if not loop.last %},
+                      style="color: {{ 'red' if gene_info.status == 'red' else 'blue' }}"><i>{{ gene_info.gene
+                        }}</i></a>{% if not loop.last %},
                     {% endif %}
                     {% endfor %}
                   </div>
@@ -84,7 +85,7 @@
     </div>
     <div class="col-lg-6" style="padding: 10px;">
       <div class="card h-100">
-        <div class="card-body" style="margin-left: 30px; margin-right: 40px;">
+        <div id="method-card" class="card-body">
           <h3>Methods</h3>
           <p>This analysis was performed using a <a href=" javascript:void(0)"
               onclick="showWikipedia('https://en.wikipedia.org/wiki/Hypergeometric_test')"
@@ -293,6 +294,7 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     $('#results').DataTable({
+      "scrollX": true,
       "order": [
         [4, "asc"]
       ], // Sort by the fifth column (p-value)
@@ -467,12 +469,39 @@
 
   .analysis-buttons {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-around;
   }
 
   .analysis-buttons .btn {
     flex: 1;
     margin: 5px;
+  }
+
+  #method-card {
+    margin-left: 30px;
+    margin-right: 40px;
+  }
+
+  @media (max-width: 600px) {
+    #results-container {
+      padding: 0;
+    }
+
+    .analysis-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+    }
+
+    .analysis-buttons .btn {
+      flex: unset;
+      margin: 5px;
+    }
+
+    #method-card {
+      margin: 0;
+    }
   }
 </style>
 {% endblock %}

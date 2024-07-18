@@ -15,6 +15,17 @@ app = Flask(__name__, static_url_path="/static")
 __version__ = "0.1.4"
 
 
+def get_version():
+    with open("static/version.txt", "r") as f:
+        version = f.read().strip()
+    return version
+
+
+@app.context_processor
+def inject_version():
+    return {"app_version": get_version()}
+
+
 # Route to serve robots.txt
 @app.route("/robots.txt")
 def robots_txt():

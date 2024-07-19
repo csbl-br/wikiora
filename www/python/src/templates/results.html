@@ -20,18 +20,17 @@
           <table id="results" class="display" style="width:100%">
             <thead>
               <tr>
-                <th>Term</th>
-                <th>Description</th>
-                <th>Overlap</th>
-                <th>Count</th>
-                <th>p-value</th>
-                <th>q-value</th>
+                <th title="Label of the gene set.">term</th>
+                <th title="Genes in the list also related to the term.">genes</th>
+                <th title="Number of overlapping genes.">count</th>
+                <th title="Ratio of overlapping genes to total genes in the gene set.">ratio</th>
+                <th title="P-value of the hypergeometric test.">p-val</th>
+                <th title="Adjusted p-value to account for multiple testing (FDR).">p-adj</th>
               </tr>
             </thead>
             <tbody>
               {% for row in results %}
               <tr>
-                <td>{{ row['Term'] }}</td>
                 <td><a href="javascript:void(0)" onclick="showWikipedia('{{ row['Wikipedia URL'] }}')"
                     class="wiki-link">{{ row['Description'] }}</a></td>
                 <td>
@@ -46,6 +45,7 @@
                   </div>
                 </td>
                 <td>{{ row['Count'] }}</td>
+                <td>{{ '%.2f'|format(row['Gene Ratio']) }}</td>
                 <td>{{ '%.2e'|format(row['p-value']) }}</td>
                 <td>{{ '%.2e'|format(row['q-value']) }}</td>
               </tr>
@@ -109,8 +109,7 @@
               adjust the p-values.</li>
             <li>Results are sorted by p-value to highlight the most significantly over-represented terms.</li>
           </ol>
-          <p>The table shows the term, description, overlapping genes, count, p-value, q-value, odds ratio, and combined
-            score. Clicking on a description displays the corresponding Wikipedia page.</p>
+          <p>More details are available in the <a href="/about" class="wiki-link">About</a> page.</p>
 
           {% include '_data_sources_and_citing.html' %}
 
@@ -118,8 +117,7 @@
       </div>
     </div>
   </div>
-  <a href="/" class="btn btn-secondary mt-3" style="color:aliceblue">Back</a>
-
+  <a class="btn btn-secondary mt-3" style="color:aliceblue" onclick="window.history.back();">Back</a>
   <form id="hidden-params" style="display: none;">
     <input type="hidden" name="gene_list"
       value="{{ request.args.get('gene_list', request.form.get('gene_list', '')) }}">
@@ -187,7 +185,7 @@
 
     // Configuration for the colorbar
     const colorbarConfig = {
-      title: 'q-value',
+      title: 'p-adjusted',
       tickformat: '.2f', // Format ticks to show up to 3 decimal places
       cmin: 0, // Lock colormap range to 0
       cmax: 1 // Lock colormap range to 1
@@ -208,9 +206,9 @@
         cmax: 1,
       }
     }], {
-      title: 'Top 10 Enriched Terms by q-value (adjusted p-value)',
+      title: 'Top 10 Enriched Terms by p-value',
       xaxis: {
-        title: '-log(q-value)',
+        title: '-log<sub>10</sub>(p-adjusted)',
         showline: true
       },
       yaxis: {
@@ -267,7 +265,7 @@
     }], {
       title: 'Top 10 Enriched Terms by Gene Ratio',
       xaxis: {
-        title: 'Gene Ratio (overlap/set length)',
+        title: 'gene ratio (overlap/set length)',
         showline: true
       },
       yaxis: {
@@ -377,7 +375,7 @@
 
   document.getElementById('download-tsv').addEventListener('click', function () {
     const data = JSON.parse(`{{ results | tojson | safe }}`);
-    let tsv = 'Term\tDescription\tOverlap\tCount\tp-value\tq-value\tGene Ratio\tOdds Ratio\tCombined Score\n';
+    let tsv = 'Term\tDescription\tOverlap\tCount\tp-value\tq-value (FDR)\tGene Ratio\tOdds Ratio\tCombined Score\n';
 
     data.forEach(row => {
       const overlap = row['Overlap'].map(g => g.gene).join(',');

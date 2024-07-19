@@ -118,7 +118,7 @@
       </div>
     </div>
   </div>
-  <a class="btn btn-secondary mt-3" style="color:aliceblue" onclick="window.history.back();">Back</a>
+  <a class="btn btn-secondary mt-3" style="color:aliceblue" onclick="goBack()">Back</a>
 
   <form id="hidden-params" style="display: none;">
     <input type="hidden" name="gene_list"
@@ -396,6 +396,14 @@
     link.click();
     document.body.removeChild(link);
   });
+
+  function goBack() {
+    if ((window.location.origin + '/') == (document.referrer)) {
+      window.history.back()
+    } else {
+      window.location.replace('/')
+    }
+  }
 </script>
 
 <style>

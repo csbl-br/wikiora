@@ -40,7 +40,8 @@
                   <div class="foldable-content" style="display:none" data-term="{{ row['Term'] }}">
                     {% for gene_info in row['Overlap'] %}
                     <a href="javascript:void(0)" onclick="showWikipedia('{{ gene_info.link }}')" class="wiki-link"
-                      style="color: {{ 'red' if gene_info.status == 'red' else 'blue' }}"><i>{{ gene_info.gene }}</i></a>{% if not loop.last %},
+                      style="color: {{ 'red' if gene_info.status == 'red' else 'blue' }}"><i>{{ gene_info.gene
+                        }}</i></a>{% if not loop.last %},
                     {% endif %}
                     {% endfor %}
                   </div>

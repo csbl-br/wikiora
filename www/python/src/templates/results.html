@@ -21,11 +21,11 @@
             <thead>
               <tr>
                 <th title="Label of the gene set.">term</th>
-                <th title="Genes in the list also related to the term.">genes</th>
-                <th title="Number of overlapping genes.">count</th>
-                <th title="Ratio of overlapping genes to total genes in the gene set.">ratio</th>
-                <th title="P-value of the hypergeometric test.">p-val</th>
+                <th title="Genes both in the list and on the gene set.">genes</th>
+                <th title="Combined score for the enrichment.">score</th>
                 <th title="Adjusted p-value to account for multiple testing (FDR).">p-adj</th>
+                <th title="P-value of the hypergeometric test.">p-val</th>
+                <th title="Ratio of overlapping genes to total genes in the gene set.">gene ratio</th>
               </tr>
             </thead>
             <tbody>
@@ -45,10 +45,28 @@
                     {% endfor %}
                   </div>
                 </td>
-                <td>{{ row['Count'] }}</td>
+                <td>
+                  {% if row['Combined Score'] >= 1000 %}
+                  {{ '%.2e'|format(row['Combined Score']) }}
+                  {% else %}
+                  {{ '%.1f'|format(row['Combined Score']) }}
+                  {% endif %}
+                </td>
+                <td>
+                  {% if row['q-value'] > 0.01 %}
+                  {{ '%.2f'|format(row['q-value']) }}
+                  {% else %}
+                  {{ '%.1e'|format(row['q-value']) }}
+                  {% endif %}
+                </td>
+                <td>
+                  {% if row['p-value'] > 0.01 %}
+                  {{ '%.2f'|format(row['p-value']) }}
+                  {% else %}
+                  {{ '%.1e'|format(row['p-value']) }}
+                  {% endif %}
+                </td>
                 <td>{{ '%.2f'|format(row['Gene Ratio']) }}</td>
-                <td>{{ '%.2e'|format(row['p-value']) }}</td>
-                <td>{{ '%.2e'|format(row['q-value']) }}</td>
               </tr>
               {% endfor %}
             </tbody>

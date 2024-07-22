@@ -58,17 +58,22 @@
     </div>
   </div>
 
-  <div class="row mt-4">
-    <div class="col text-left">
-      <h6 class="d-inline small text-muted">Dashboards generated : </h6>
-      <div class="d-inline " style="color: blue; opacity: 0.8;"><span id="lists-enriched-counter"
-          class="d-inline">0</span> and
-        counting</div>
+  <body class="gray-background">
+    <div class="row mt-4">
+      <div class="col text-left">
+        <h6 class="d-inline small gray-text">Total runs: </h6>
+        <div class="d-inline gray-text">
+          <span id="lists-enriched-counter" class="d-inline">0</span> and counting.
+          <img src="https://upload.wikimedia.org/wikipedia/commons/d/d9/Icon-round-Question_mark.svg"
+            class="question-mark-icon" alt="?"
+            title="Count is updated for every dashboard generated. Values may vary slightly due to data synchronization.">
+        </div>
+      </div>
     </div>
-  </div>
+
+    <script src="{{ url_for('static', filename='js/count.js') }}"></script>
 </div>
 
-<script src="{{ url_for('static', filename='js/count.js') }}"></script>
 <script>
   function handleDragOver(event) {
     event.preventDefault();
@@ -164,6 +169,18 @@
   .text-left span {
     font-size: 1rem;
     display: inline-block;
+  }
+
+  .question-mark-icon {
+    width: 16px;
+    height: 16px;
+    opacity: 0.5;
+    margin-left: 5px;
+    cursor: pointer;
+  }
+
+  .question-mark-icon:hover {
+    opacity: 1.0;
   }
 </style>
 {% endblock %}

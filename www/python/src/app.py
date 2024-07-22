@@ -10,35 +10,47 @@ import json
 import random
 import os
 import matplotlib.colors as mcolors  # Add this import
+import sqlite3
 
 app = Flask(__name__, static_url_path="/static")
 __version__ = "0.2.1"
 
-import uuid
-
-TASK_ID_FILE_PATH = "static/task_ids.txt"
-COUNTER_FILE_PATH = "static/lists_enriched.txt"
+DATABASE = "database.db"
 
 
-def initialize_counter():
-    print("running initialize_counter")
-    if not os.path.exists(COUNTER_FILE_PATH):
-        with open(COUNTER_FILE_PATH, "w") as f:
-            f.write("0")
+def init_db():
+    with sqlite3.connect(DATABASE) as conn:
+        cursor = conn.cursor()
+        cursor.execute(
+            """
+            CREATE TABLE IF NOT EXISTS counter (
+                id INTEGER PRIMARY KEY,
+                count INTEGER NOT NULL
+            )
+        """
+        )
+        cursor.execute(
+            """
+            INSERT INTO counter (count) 
+            SELECT 0 WHERE NOT EXISTS (SELECT 1 FROM counter)
+        """
+        )
+        conn.commit()
 
 
 def increment_counter():
-    with open(COUNTER_FILE_PATH, "r+") as f:
-        count = int(f.read())
-        count += 1
-        f.seek(0)
-        f.write(str(count))
-        f.truncate()
+    with sqlite3.connect(DATABASE) as conn:
+        cursor = conn.cursor()
+        cursor.execute("UPDATE counter SET count = count + 1")
+        conn.commit()
 
 
 def get_counter():
-    with open(COUNTER_FILE_PATH, "r") as f:
-        return int(f.read())
+    with sqlite3.connect(DATABASE) as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT count FROM counter")
+        count = cursor.fetchone()[0]
+        return count
 
 
 @app.route("/api/lists_enriched", methods=["GET"])
@@ -364,5 +376,5 @@ def plot_results(df):
 
 
 if __name__ == "__main__":
-    initialize_counter()
+    init_db()
     app.run(debug=True)

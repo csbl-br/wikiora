@@ -36,6 +36,11 @@ def init_db():
         """
         )
         conn.commit()
+        # Debugging log
+        cursor.execute("SELECT count FROM counter")
+        count = cursor.fetchone()[0]
+        print(f"Database initialized with counter value: {count}")
+
 
 
 def increment_counter():
@@ -261,7 +266,6 @@ def api_enrich():
         )  # Show only the top 10 enriched sets with lowest p-values
         results = results_df.to_dict(orient="records")
 
-    increment_counter()
     return jsonify(results)
 
 
@@ -284,6 +288,7 @@ def enrich():
     )
     response = api_enrich()
     results = response.get_json()
+    increment_counter()
     return render_template("results.html", results=results)
 
 

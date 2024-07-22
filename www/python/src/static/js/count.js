@@ -9,26 +9,24 @@ function fetchListsEnriched() {
 
 async function updateCounter() {
   const data = await fetchListsEnriched();
-  const currentCount = parseInt(document.getElementById('lists-enriched-counter').textContent, 10);
   const newCount = data.lists_enriched;
-
-  if (currentCount !== newCount) {
-      smoothIncrement(currentCount, newCount);
-  }
+  smoothIncrement(0, newCount);
 }
 
 function smoothIncrement(start, end) {
   const duration = 1000; // Duration of the animation in milliseconds
-  const increment = (end - start) / (duration / 100);
+  const increment = (end - start) / (duration / 10);
   let current = start;
   const interval = setInterval(() => {
       current += increment;
       document.getElementById('lists-enriched-counter').textContent = Math.floor(current);
       if (current >= end) {
           clearInterval(interval);
+          document.getElementById('lists-enriched-counter').textContent = end; // Ensure final value is set accurately
       }
   }, 10);
 }
+
 
 // Call updateCounter initially to set the counter value
 updateCounter();

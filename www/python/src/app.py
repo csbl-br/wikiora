@@ -13,7 +13,7 @@ import matplotlib.colors as mcolors  # Add this import
 import sqlite3
 
 app = Flask(__name__, static_url_path="/static")
-__version__ = "0.2.1"
+__version__ = "0.2.2"
 
 DATABASE = "database.db"
 

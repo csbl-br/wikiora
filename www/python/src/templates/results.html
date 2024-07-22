@@ -396,12 +396,14 @@
 
   document.getElementById('download-tsv').addEventListener('click', function () {
     const data = JSON.parse(`{{ results | tojson | safe }}`);
-    let tsv = 'Term\tDescription\tOverlap\tCount\tp-value\tq-value (FDR)\tGene Ratio\tOdds Ratio\tCombined Score\n';
+    const appVersion = `{{ app_version }}`;
+    let tsv =
+      'Term\tDescription\tOverlapping Genes\tp-value\tq-value (FDR)\tCount\tGene Set Size\tGene Ratio\tOdds Ratio\tCombined Score\tWikiORA Version\n';
 
     data.forEach(row => {
-      const overlap = row['Overlap'].map(g => g.gene).join(',');
+      const overlappingGenes = row['Overlap'].map(g => g.gene).join(',');
       tsv +=
-        `${row['Term']}\t${row['Description']}\t${overlap}\t${row['Count']}\t${row['p-value']}\t${row['q-value']}\t${row['Gene Ratio']}\t${row['Odds Ratio']}\t${row['Combined Score']}\n`;
+        `${row['Term']}\t${row['Description']}\t${overlappingGenes}\t${row['p-value']}\t${row['q-value']}\t${row['Count']}\t${row['Gene Set Size']}\t${row['Gene Ratio']}\t${row['Odds Ratio']}\t${row['Combined Score']}\t${appVersion}\n`;
     });
 
     const blob = new Blob([tsv], {
@@ -415,6 +417,7 @@
     link.click();
     document.body.removeChild(link);
   });
+
 
   function goBack() {
     if ((window.location.origin + '/') == (document.referrer)) {

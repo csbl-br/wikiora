@@ -36,6 +36,8 @@
     <li><strong>Count:</strong> The number of overlapping genes.</li>
     <li><strong>p-value:</strong> The probability of observing the overlap by chance, calculated using the
       hypergeometric test.</li>
+    <li><strong>q-value:</strong> The p-value adjusted for multiple testing using the Benjamini-Hochberg correction.
+    </li>
     <li><strong>Odds Ratio:</strong> Measures the association strength, calculated as:
       <pre>odds_ratio = (overlap_count * (total_genes - gene_set_size - input_gene_list_size + overlap_count)) / max((gene_set_size - overlap_count) * (input_gene_list_size - overlap_count), 1)</pre>
     </li>
@@ -45,7 +47,7 @@
     <li><strong>Gene Ratio:</strong> The ratio of overlapping genes to the total genes in the gene set, calculated as:
       <pre>gene_ratio = overlap_count / gene_set_size</pre>
     </li>
-    <li><strong>q-value:</strong> The p-value adjusted for multiple testing using the Benjamini-Hochberg correction.
+    <li><strong>Gene Set Size:</strong> The number of genes listed in this particular gene set. </pre>
     </li>
   </ul>
 

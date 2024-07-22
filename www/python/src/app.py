@@ -197,6 +197,7 @@ def api_enrich():
                 "Wikipedia URL": details["wikipedia_url"],
                 "Overlap": overlap_info,
                 "Count": x,
+                "Gene Set Size": n,  # Include Gene Set Size in the results
                 "p-value": p_value,
                 "Odds Ratio": odds_ratio,
                 "Combined Score": combined_score,

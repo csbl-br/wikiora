@@ -14,6 +14,39 @@ import matplotlib.colors as mcolors  # Add this import
 app = Flask(__name__, static_url_path="/static")
 __version__ = "0.2.0"
 
+import uuid
+
+TASK_ID_FILE_PATH = "static/task_ids.txt"
+COUNTER_FILE_PATH = "static/lists_enriched.txt"
+
+
+def initialize_counter():
+    print("running initialize_counter")
+    if not os.path.exists(COUNTER_FILE_PATH):
+        with open(COUNTER_FILE_PATH, "w") as f:
+            f.write("0")
+
+
+def increment_counter():
+    with open(COUNTER_FILE_PATH, "r+") as f:
+        count = int(f.read())
+        count += 1
+        f.seek(0)
+        f.write(str(count))
+        f.truncate()
+
+
+def get_counter():
+    with open(COUNTER_FILE_PATH, "r") as f:
+        return int(f.read())
+
+
+@app.route("/api/lists_enriched", methods=["GET"])
+def get_lists_enriched():
+    lists_count = get_counter()
+    print(lists_count)
+    return jsonify({"lists_enriched": lists_count})
+
 
 def get_version():
     with open("static/version.txt", "r") as f:
@@ -216,6 +249,7 @@ def api_enrich():
         )  # Show only the top 10 enriched sets with lowest p-values
         results = results_df.to_dict(orient="records")
 
+    increment_counter()
     return jsonify(results)
 
 
@@ -330,4 +364,5 @@ def plot_results(df):
 
 
 if __name__ == "__main__":
+    initialize_counter()
     app.run(debug=True)

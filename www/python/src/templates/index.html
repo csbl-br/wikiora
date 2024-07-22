@@ -19,7 +19,7 @@
     <div class="col">
       <div class="card h-100">
         <div class="card-body">
-          <form id="enrich-form" action="/enrich" method="get">
+          <form id="enrich-form" action="/enrich" method="post">
             <div class="form-group">
               <label for="organism">Organism</label>
               <select class="form-control" id="organism" name="organism">
@@ -57,7 +57,18 @@
       </div>
     </div>
   </div>
+
+  <div class="row mt-4">
+    <div class="col text-left">
+      <h6 class="d-inline small text-muted">Dashboards generated : </h6>
+      <div class="d-inline " style="color: blue; opacity: 0.8;"><span id="lists-enriched-counter"
+          class="d-inline">0</span> and
+        counting</div>
+    </div>
+  </div>
 </div>
+
+<script src="{{ url_for('static', filename='js/count.js') }}"></script>
 <script>
   function handleDragOver(event) {
     event.preventDefault();
@@ -147,6 +158,12 @@
 
   .card-body img {
     flex: 1;
+  }
+
+  .text-left h6,
+  .text-left span {
+    font-size: 1rem;
+    display: inline-block;
   }
 </style>
 {% endblock %}

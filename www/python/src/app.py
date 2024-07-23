@@ -117,6 +117,11 @@ def select_random_process(processes):
     genes = process["gene_symbol"][:50]
     return genes
 
+def select_random_separator():
+    separators = [',', '\t', '\n', ';']
+    separator = random.choice(separators)
+    return separator
+
 
 # Function to perform hypergeometric test
 def hypergeometric_test(M, n, N, x):
@@ -172,7 +177,8 @@ def example_genes():
             processes = load_processes("static/processes_mouse_cell_type.json")
 
     default_genes = select_random_process(processes)
-    default_genes_str = ", ".join(default_genes)
+    separator = select_random_separator()
+    default_genes_str = separator.join(default_genes)
     return default_genes_str
 
 

@@ -118,8 +118,9 @@ def select_random_process(processes):
     return genes
 
 def select_random_separator():
-    separators = [',', '\t', '\n', ';']
-    separator = random.choice(separators)
+    separators = [', ', '\t', '\n', '; ']
+    probs = [0.8, 0.1, 0.3, 0.1]
+    separator = random.choices(separators, probs)[0]
     return separator
 
 

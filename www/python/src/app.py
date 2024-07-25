@@ -42,7 +42,6 @@ def init_db():
         print(f"Database initialized with counter value: {count}")
 
 
-
 def increment_counter():
     with sqlite3.connect(DATABASE) as conn:
         cursor = conn.cursor()
@@ -117,8 +116,9 @@ def select_random_process(processes):
     genes = process["gene_symbol"][:50]
     return genes
 
+
 def select_random_separator():
-    separators = [', ', '\t', '\n', '; ']
+    separators = [", ", "\t", "\n", "; "]
     probs = [0.8, 0.1, 0.3, 0.1]
     separator = random.choices(separators, probs)[0]
     return separator
@@ -225,7 +225,10 @@ def api_enrich():
             gene_sets = load_gmt("static/gene_sets_mouse_cell_type.gmt")
 
     # Total number of genes in the background
-    M = sum(len(details["genes"]) for details in gene_sets.values())
+    unique_genes = set()
+    for details in gene_sets.values():
+        unique_genes.update(details["genes"])
+    M = len(unique_genes)
     N = len(genes)
     total_gene_sets = len(gene_sets)
 

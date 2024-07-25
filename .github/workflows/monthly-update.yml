@@ -2,7 +2,7 @@ name: Monthly Update
 
 on:
   schedule:
-    - cron: '0 0 25 * *'  # Runs at 00:00 on the 25th day of each month
+    - cron: '0 0 26 * *'  # Runs at 00:00 on the 26th day of each month
   workflow_dispatch:  # Allows manual triggering for testing
 
 jobs:

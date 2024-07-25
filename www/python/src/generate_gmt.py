@@ -203,10 +203,10 @@ def main():
     human_cell_type_df = process_data(human_cell_type_results)
     generate_gmt(
         human_cell_type_df,
-        STATIC / "/gene_sets_human_cell_type.gmt",
+        STATIC / "gene_sets_human_cell_type.gmt",
         use_item_label=True,
     )
-    save_processes(human_cell_type_df, STATIC / "/processes_human_cell_type.json")
+    save_processes(human_cell_type_df, STATIC / "processes_human_cell_type.json")
 
     # Mouse cell type markers
     mouse_cell_type_results = fetch_data(mouse_cell_type_query)

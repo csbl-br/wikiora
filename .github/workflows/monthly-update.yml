@@ -26,8 +26,8 @@ jobs:
     - name: Run fetch_wikipedia_genes
       run: python www/python/src/fetch_wikipedia_genes.py
 
-#    - name: Run generate_gmt
-#      run: python www/python/src/generate_gmt.py
+    - name: Run generate_gmt
+      run: python www/python/src/generate_gmt.py
 
     - name: Commit changes
       run: |

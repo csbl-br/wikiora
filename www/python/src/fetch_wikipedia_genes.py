@@ -73,7 +73,7 @@ def main():
     results = fetch_sparql_results(SPARQL_ENDPOINT, SPARQL_QUERY)
     genes = process_results(results)
     with open(STATIC / "genes.json", "w") as f:
-        json.dump(genes, f, indent=4)
+        json.dump(genes, f, indent=4, sort_keys=True
 
 
 if __name__ == "__main__":

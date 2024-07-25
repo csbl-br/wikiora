@@ -1,5 +1,10 @@
 import requests
 import json
+import time
+from pathlib import Path
+
+HERE = Path(__file__).parent.resolve()
+STATIC = HERE.joinpath("static").resolve()
 
 SPARQL_ENDPOINT = "https://query.wikidata.org/sparql"
 SPARQL_QUERY = """
@@ -30,11 +35,25 @@ WHERE {
 """
 
 
-def fetch_sparql_results(endpoint, query):
-    headers = {"Accept": "application/sparql-results+json"}
-    response = requests.get(endpoint, headers=headers, params={"query": query})
-    response.raise_for_status()
-    return response.json()
+def fetch_sparql_results(endpoint, query, retries=3):
+    headers = {
+        "Accept": "application/sparql-results+json",
+        "User-Agent": "Mozilla/5.0 (compatible; myscript/1.0; +https://example.com/bot)",
+    }
+    for _ in range(retries):
+        try:
+            response = requests.get(endpoint, headers=headers, params={"query": query})
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.HTTPError as e:
+            if response.status_code == 403:
+                print(f"Access denied: {e}. Retrying...")
+            else:
+                print(f"HTTP error occurred: {e}")
+            time.sleep(5)  # Wait before retrying
+    raise requests.exceptions.HTTPError(
+        f"Failed to fetch data after {retries} attempts"
+    )
 
 
 def process_results(results):
@@ -53,8 +72,8 @@ def process_results(results):
 def main():
     results = fetch_sparql_results(SPARQL_ENDPOINT, SPARQL_QUERY)
     genes = process_results(results)
-    with open("genes.json", "w") as f:
-        json.dump(genes, f, indent=4)
+    with open(STATIC / "genes.json", "w") as f:
+        json.dump(genes, f, indent=4, sort_keys=True)
 
 
 if __name__ == "__main__":

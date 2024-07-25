@@ -31,8 +31,8 @@ jobs:
 
     - name: Commit changes
       run: |
-        git config --local user.email "your-email@example.com"
-        git config --local user.name "Your Name"
+        git config --local user.email "tiago.lubiana.alves@usp.br"
+        git config --local user.name "Tiago Lubiana"
         git add .
         git commit -m "Monthly update: fetch genes and generate GMT"
       env:
@@ -41,7 +41,7 @@ jobs:
     - name: Bump version and push
       run: |
         pip install bump2version
-        bump2version minor --tag
+        bump2version minor --allow-dirty --commit --tag --verbose
         git push --follow-tags
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

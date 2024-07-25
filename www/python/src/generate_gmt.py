@@ -5,9 +5,7 @@ from jinja2 import Template
 from pathlib import Path
 
 HERE = Path(__file__).parent.resolve()
-
 STATIC = HERE.joinpath("static").resolve()
-
 
 # Template SPARQL query for GO terms using Jinja2
 go_query_template = """
@@ -194,29 +192,33 @@ def main():
             )
             results = fetch_data(query)
             df = process_data(results)
-            output_file = STATIC / f"gene_sets_{organism}_{category}.gmt"
+            output_file = STATIC.joinpath(f"gene_sets_{organism}_{category}.gmt")
             generate_gmt(df, output_file)
-            save_processes(df, STATIC / f"processes_{organism}_{category}.json")
+            save_processes(df, STATIC.joinpath(f"processes_{organism}_{category}.json"))
 
     # Human cell type markers
     human_cell_type_results = fetch_data(human_cell_type_query)
     human_cell_type_df = process_data(human_cell_type_results)
     generate_gmt(
         human_cell_type_df,
-        STATIC / "gene_sets_human_cell_type.gmt",
+        STATIC.joinpath("gene_sets_human_cell_type.gmt"),
         use_item_label=True,
     )
-    save_processes(human_cell_type_df, STATIC / "processes_human_cell_type.json")
+    save_processes(
+        human_cell_type_df, STATIC.joinpath("processes_human_cell_type.json")
+    )
 
     # Mouse cell type markers
     mouse_cell_type_results = fetch_data(mouse_cell_type_query)
     mouse_cell_type_df = process_data(mouse_cell_type_results)
     generate_gmt(
         mouse_cell_type_df,
-        STATIC / "gene_sets_mouse_cell_type.gmt",
+        STATIC.joinpath("gene_sets_mouse_cell_type.gmt"),
         use_item_label=True,
     )
-    save_processes(mouse_cell_type_df, STATIC / "processes_mouse_cell_type.json")
+    save_processes(
+        mouse_cell_type_df, STATIC.joinpath("processes_mouse_cell_type.json")
+    )
 
     # Custom handling for molecular functions
     for organism, details in organisms.items():
@@ -237,10 +239,11 @@ def main():
         combined_df["sitelink"] = combined_df["sitelink_wiki"]
         combined_df = combined_df.drop(columns=["sitelink_wiki", "itemLabel_wiki"])
 
-        output_file = STATIC / f"gene_sets_{organism}_molecular_functions.gmt"
+        output_file = STATIC.joinpath(f"gene_sets_{organism}_molecular_functions.gmt")
         generate_gmt(combined_df, output_file)
         save_processes(
-            combined_df, STATIC / f"processes_{organism}_molecular_functions.json"
+            combined_df,
+            STATIC.joinpath(f"processes_{organism}_molecular_functions.json"),
         )
 
 

@@ -116,12 +116,13 @@
           </p>
           <ol>
             <li>A list of genes is provided by the user.</li>
-            <li>The background gene sets are defined using data curated into Wikidata.</li>
+            <li>The background gene sets are defined using data curated into Wikidata, forming gene libraries.</li>
             <li>For each gene set, the overlap between the user-provided gene list and the genes associated with the
-              gene set (and its Wikipedia page) is calculated.</li>
+              gene set is calculated.</li>
             <li>The <a href="javascript:void(0)" onclick="showWikipedia('https://en.wikipedia.org/wiki/P-value')"
                 class="wiki-link">p-value</a> is calculated using the hypergeometric test, representing the probability
-              of observing at least as many overlapping genes by chance.</li>
+              of observing at least as many overlapping genes by chance, given all the background genes in the library.
+            </li>
             <li>The <a href="javascript:void(0)"
                 onclick="showWikipedia('https://en.wikipedia.org/wiki/Benjamini%E2%80%93Hochberg_procedure')"
                 class="wiki-link">Benjamini-Hochberg correction</a> is applied to account for multiple testing and

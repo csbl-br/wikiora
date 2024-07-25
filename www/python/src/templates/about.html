@@ -15,12 +15,12 @@
   <p>WikiORA follows these steps to perform over-representation analysis:</p>
   <ol>
     <li>Users submit a list of genes.</li>
-    <li>For each gene set on the library, we calculate the overlap between the user-provided gene list and the genes in
-      the gene set.
+    <li>For each gene set, the overlap between the user-provided gene list and the genes associated with the
+      gene set is calculated.</li>
+    <li>The p-value is computed using is calculated using the hypergeometric test, representing the probability
+      of observing at least as many overlapping genes by chance, given all the background genes in the library.
     </li>
-    <li>The p-value is computed using the hypergeometric test to determine the likelihood of observing the overlap by
-      chance.</li>
-    <li>We apply the Benjamini-Hochberg correction to adjust p-values for multiple testing.</li>
+    <li>WikiORA applies the Benjamini-Hochberg correction to adjust p-values for multiple testing.</li>
     <li>Results are sorted by p-value to identify the most significantly over-represented terms.</li>
   </ol>
 

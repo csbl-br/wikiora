@@ -156,7 +156,9 @@ def generate_gmt(df, output_file, use_item_label=False):
     with open(output_file, "w") as f:
         group_col = "itemLabel" if use_item_label else "go"
         for term, group in df.groupby(group_col):
-            genes = group["gene_symbol"].tolist()
+            genes = sorted(
+                group["gene_symbol"].tolist()
+            )  # Sort the genes alphabetically
             line = (
                 f"{term}\t{group['itemLabel'].iloc[0]}\t{group['sitelink'].iloc[0]}\t"
                 + "\t".join(genes)

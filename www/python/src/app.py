@@ -13,7 +13,7 @@ import matplotlib.colors as mcolors  # Add this import
 import sqlite3
 
 app = Flask(__name__, static_url_path="/static")
-__version__ = "0.3.0"
+__version__ = "0.2.4"
 
 DATABASE = "database.db"
 
@@ -40,7 +40,6 @@ def init_db():
         cursor.execute("SELECT count FROM counter")
         count = cursor.fetchone()[0]
         print(f"Database initialized with counter value: {count}")
-
 
 
 def increment_counter():
@@ -117,8 +116,9 @@ def select_random_process(processes):
     genes = process["gene_symbol"][:50]
     return genes
 
+
 def select_random_separator():
-    separators = [', ', '\t', '\n', '; ']
+    separators = [", ", "\t", "\n", "; "]
     probs = [0.8, 0.1, 0.3, 0.1]
     separator = random.choices(separators, probs)[0]
     return separator

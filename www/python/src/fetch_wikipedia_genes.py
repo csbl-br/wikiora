@@ -1,5 +1,9 @@
 import requests
 import json
+from pathlib import Path
+
+HERE = Path(__file__).parent.resolve()
+STATIC = HERE.joinpath("static").resolve()
 
 SPARQL_ENDPOINT = "https://query.wikidata.org/sparql"
 SPARQL_QUERY = """
@@ -53,7 +57,7 @@ def process_results(results):
 def main():
     results = fetch_sparql_results(SPARQL_ENDPOINT, SPARQL_QUERY)
     genes = process_results(results)
-    with open("genes.json", "w") as f:
+    with open(STATIC / "genes.json", "w") as f:
         json.dump(genes, f, indent=4)
 
 

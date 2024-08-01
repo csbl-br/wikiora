@@ -79,5 +79,3 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ## Acknowledgements
 
 Made in 🇧🇷 in 2024. Content from Wikidata is under CC0.
-
-If you like our project, give us a ⭐ on [GitHub](https://github.com/lubianat/wikiora)!

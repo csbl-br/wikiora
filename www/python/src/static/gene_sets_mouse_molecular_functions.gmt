@@ -1,5 +1,5 @@
 GO:0000010	trans-hexaprenyltranstransferase activity	https://en.wikipedia.org/wiki/Heptaprenyl_diphosphate_synthase	Pdss1	Pdss2
-GO:0000048	peptidyltransferase activity	https://en.wikipedia.org/wiki/Peptidyl_transferase	Ggt1	Ggt5	Ggt7
+GO:0000048	peptidyltransferase activity	https://en.wikipedia.org/wiki/Peptidyl_transferase_center	Ggt1	Ggt5	Ggt7
 GO:0000104	succinate dehydrogenase activity	https://en.wikipedia.org/wiki/Fumarate_reductase	Sdha	Sdhc	Sdhd
 GO:0000121	glycerol-1-phosphatase activity	https://en.wikipedia.org/wiki/Glycerol-1-phosphatase	Pgp
 GO:0000140	acylglycerone-phosphate reductase activity	https://en.wikipedia.org/wiki/Acylglycerone-phosphate_reductase	Dhrs7b

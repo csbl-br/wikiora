@@ -210,6 +210,7 @@ GO:0043204	perikaryon	https://en.wikipedia.org/wiki/Soma_(biology)	ADCYAP1	AIF1	
 GO:0043220	Schmidt-Lanterman incisure	https://en.wikipedia.org/wiki/Myelin_incisure	AKR1B1	ANXA2	JAM3	MAG	MARVELD2	MPDZ	NCMAP	PALS1	PRKCI	PTEN	SIRT2
 GO:0043265	ectoplasm	https://en.wikipedia.org/wiki/Ectoplasm_(cell_biology)	GYS2
 GO:0043293	apoptosome	https://en.wikipedia.org/wiki/Apoptosome	APAF1	CASP9
+GO:0044233	mitochondria associated membranes	https://en.wikipedia.org/wiki/Mitochondria_associated_membranes	ACSL4	ATG14	ATG5	CANX	FATE1	MBOAT7	PDZD8	RAB32	RAB38	SERAC1	STX17	TOMM20	ZFYVE1
 GO:0044301	climbing fiber	https://en.wikipedia.org/wiki/Climbing_fiber	C1QL1	DAB2IP
 GO:0044305	calyx of Held	https://en.wikipedia.org/wiki/Calyx_of_Held	ADORA1	CALB1	CPLX1	CPLX2	GIT1	GLRA1	HTR1B	ITSN1	KCNA1	KCNA2	KCNA3	KCNC1	KCNK2	NCS1	NOS1	PRKCB	PRKCG	TPRG1L	TSPOAP1	UNC13A	UNC13B	UNC13C
 GO:0044354	macropinosome	https://en.wikipedia.org/wiki/Macropinosome	ANKFY1	ANXA2	APPL1	APPL2	CARMIL1	CARMIL2	CLIP1	MMP14
